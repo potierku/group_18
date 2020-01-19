@@ -77,14 +77,20 @@ p + geom_point() + scale_x_log10(labels = dollar)
 p + geom_point() + scale_x_log10(labels = dollar) + geom_smooth()
 
 #What does fill = continent do? What do you think about the match of colors between lines and error bands?
+#fill = continent tells ggplot to assign a fill for each continent, these are for the error bands.
+#The line colors are a darker shade and the error bands use a lighter shade of the same color. They 
+#show a nice contrast while still clearly matching.
 
 p <- ggplot(data = gapminder,
             mapping = aes(x = gdpPercap, y = lifeExp))
 p + geom_point(mapping = aes(color = continent)) + geom_smooth() + scale_x_log10()
 
 # Notice how the above code leads to a single smooth line, not one per continent. Why?
+#the data is not separated by continent in the ggplot mapping as was done previous. 
 
 #What is bad about the following example, assuming the graph is the one we want? Think about why you should set aesthetics at the top level rather than at the individual geometry level if that’s your intent.
+#there are multiple lines for each continent. Asthetics should be set as top level so multiple operations do not
+#cause confusion.
 
 p <- ggplot(data = gapminder,
             mapping = aes(x = gdpPercap, y = lifeExp))
