@@ -99,7 +99,60 @@ p + geom_point(mapping = aes(color = continent)) +
   scale_x_log10() +
   geom_smooth(mapping = aes(color = continent), method = "gam")
 
+#exercise 2
+#library needed for melt function
+library(reshape2)
+#reads the csv
+data <-read.csv("bank.csv",header=TRUE)
 
+#segments data based upon age ranges
+data_20 <- data[data$age %in% c(10:29),]
+data_30 <- data[data$age %in% c(30:39),]
+data_40 <- data[data$age %in% c(40:49),]
+data_50 <- data[data$age %in% c(50:59),]
+data_60 <- data[data$age %in% c(60:69),]
+data_70 <- data[data$age %in% c(70:99),]
 
+#success rate for each age range
+success_20 <- sum(data_20$y=="yes")/length(data_20$y)
+success_30 <- sum(data_30$y=="yes")/length(data_30$y)
+success_40 <- sum(data_40$y=="yes")/length(data_40$y)
+success_50 <- sum(data_50$y=="yes")/length(data_50$y)
+success_60 <- sum(data_60$y=="yes")/length(data_60$y)
+success_70 <- sum(data_70$y=="yes")/length(data_70$y)
+
+#plots success rate for each age range
+success <- data.frame(success_20,success_30,success_40,success_50,success_60,success_70)
+success_melted <- melt(data=success)
+success_plot <- ggplot(data=success_melted,aes(x=variable,y=value))
+success_plot + geom_bar(stat="identity")
+
+#duration for each age range
+duration_20 <- mean(data_20$duration)
+duration_30 <- mean(data_30$duration)
+duration_40 <- mean(data_40$duration)
+duration_50 <- mean(data_50$duration)
+duration_60 <- mean(data_60$duration)
+duration_70 <- mean(data_70$duration)
+
+#plots duration for each age range
+duration <- data.frame(duration_20,duration_30,duration_40,duration_50,duration_60,duration_70)
+duration_melted <-melt(data=duration)
+duration_plot <- ggplot(data=duration_melted,aes(x=variable,y=value))
+duration_plot + geom_bar(stat="identity")
+
+#rate of deposits per hour calling for each age range
+rate_20 <- 3600*(sum(data_20$y=="yes")/sum(data_20$duration))
+rate_30 <- 3600*(sum(data_30$y=="yes")/sum(data_30$duration))
+rate_40 <- 3600*(sum(data_40$y=="yes")/sum(data_40$duration))
+rate_50 <- 3600*(sum(data_50$y=="yes")/sum(data_50$duration))
+rate_60 <- 3600*(sum(data_60$y=="yes")/sum(data_60$duration))
+rate_70 <- 3600*(sum(data_70$y=="yes")/sum(data_70$duration))
+
+#plots rate for each age range
+rate <- data.frame(rate_20,rate_30,rate_40,rate_50,rate_60,rate_70)
+rate_melted <-melt(data=rate)
+rate_plot <- ggplot(data=rate_melted,aes(x=variable,y=value))
+rate_plot + geom_bar(stat="identity")
 
 
