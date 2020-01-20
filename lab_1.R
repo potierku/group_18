@@ -123,9 +123,11 @@ success_70 <- sum(data_70$y=="yes")/length(data_70$y)
 
 #plots success rate for each age range
 success <- data.frame(success_20,success_30,success_40,success_50,success_60,success_70)
+names(success)<-c("10-29","30-39","40-49","50-59","60-69","70+")
 success_melted <- melt(data=success)
 success_plot <- ggplot(data=success_melted,aes(x=variable,y=value))
-success_plot + geom_bar(stat="identity")
+success_plot + geom_bar(stat="identity") +xlab("Age Ranges") +ylab("Success Rate") + 
+  ggtitle("Success Rate by Age Range")+theme(plot.title=element_text(hjust=.5))
 
 #duration for each age range
 duration_20 <- mean(data_20$duration)
@@ -137,9 +139,11 @@ duration_70 <- mean(data_70$duration)
 
 #plots duration for each age range
 duration <- data.frame(duration_20,duration_30,duration_40,duration_50,duration_60,duration_70)
+names(duration)<-c("10-29","30-39","40-49","50-59","60-69","70+")
 duration_melted <-melt(data=duration)
 duration_plot <- ggplot(data=duration_melted,aes(x=variable,y=value))
-duration_plot + geom_bar(stat="identity")
+duration_plot + geom_bar(stat="identity") +xlab("Age Ranges") +ylab("Average Duration (seconds)") +
+  ggtitle("Duration of Phone Call by Age Ranges")+theme(plot.title=element_text(hjust=.5))
 
 #rate of deposits per hour calling for each age range
 rate_20 <- 3600*(sum(data_20$y=="yes")/sum(data_20$duration))
@@ -151,8 +155,10 @@ rate_70 <- 3600*(sum(data_70$y=="yes")/sum(data_70$duration))
 
 #plots rate for each age range
 rate <- data.frame(rate_20,rate_30,rate_40,rate_50,rate_60,rate_70)
+names(rate)<-c("10-29","30-39","40-49","50-59","60-69","70+")
 rate_melted <-melt(data=rate)
 rate_plot <- ggplot(data=rate_melted,aes(x=variable,y=value))
-rate_plot + geom_bar(stat="identity")
+rate_plot + geom_bar(stat="identity") +xlab("Age Ranges") +ylab("Deposits per Hour")+
+  ggtitle("Number of Deposits per Hour of Phone Call by Age Range")+theme(plot.title=element_text(hjust=.5))
 
 
