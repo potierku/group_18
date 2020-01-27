@@ -1,3 +1,5 @@
+library(ggplot2)
+
 ameslist <- as.data.frame(read.table("https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv",header = TRUE,sep = ","))
 
 #Run the above, but instead specifying header = FALSE. 
@@ -35,5 +37,5 @@ unique(ameslist$GarageOutside)
 
 Ames<-ameslist[which(sapply(ameslist,is.numeric)==TRUE)]
 
-sapply(Ames,unique)
 names(Ames)
+pairs(~LotArea+YearBuilt+OverallQual,data=Ames)
