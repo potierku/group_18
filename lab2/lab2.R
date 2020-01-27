@@ -1,4 +1,5 @@
 library(ggplot2)
+library(rowr)
 
 ameslist <- as.data.frame(read.table("https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv",header = TRUE,sep = ","))
 
@@ -27,7 +28,7 @@ names(ameslist)
 typeof(ameslist)
 
 GarageTemp <- model.matrix( ~ GarageType - 1, data=ameslist )
-ameslist <- merge(ameslist, GarageTemp)
+ameslist <- cbind.fill(ameslist, GarageTemp)
 
 ameslist$GarageOutside <- ifelse(ameslist$GarageTypeDetchd == 1 | ameslist$GarageTypeCarPort == 1, 1, 0)
 unique(ameslist$GarageOutside)
@@ -38,4 +39,21 @@ unique(ameslist$GarageOutside)
 Ames<-ameslist[which(sapply(ameslist,is.numeric)==TRUE)]
 
 names(Ames)
-pairs(~LotArea+YearBuilt+OverallQual,data=Ames)
+pairs(~LotArea+YearBuilt+OverallQual+OverallCond+BsmtFinSF1+TotRmsAbvGrd+MoSold+FullBath+
+        HalfBath+GarageCars+BedroomAbvGr+YrSold,data=Ames)
+
+Ames_small <- Ames[,c(4,5,6,7,10,20,21,22,24,27,36,37,38)]
+
+cor(Ames_small)
+#most matched prior beliefs, overall condition and sale price were negatively correlated, which was surprising
+reg<-lm(SalePrice~GrLivArea,data=ameslist)
+ggplot(ameslist,aes(x=GrLivArea,y=SalePrice))+
+  geom_point()+
+  geom_abline(intercept=coef(reg)["(Intercept)"],slope=coef(reg)["GrLivArea"])
+
+#the following line gives information abou the largest outlier above the line
+ameslist[which.max(ameslist$SalePrice-(ameslist$GrLivArea*coef(reg)["GrLivArea"]+coef(reg)["(Intercept)"])),]
+
+#/////////////////exercise 2///////////////////////////
+
+
