@@ -55,5 +55,72 @@ ggplot(ameslist,aes(x=GrLivArea,y=SalePrice))+
 ameslist[which.max(ameslist$SalePrice-(ameslist$GrLivArea*coef(reg)["GrLivArea"]+coef(reg)["(Intercept)"])),]
 
 #/////////////////exercise 2///////////////////////////
+#lm(SalePrice~lstat,data=ameslist) what is lstat?
+
+attach(Ames)
+lm.fit <- lm(SalePrice ~ GrLivArea)
+
+#What is GrLivArea? 
+#It is the square footage of the ground level
+
+#If you did not include this variable above, check its relationship to other variables in 
+#the dataset to get a better idea what it is.
+cor(ameslist$GrLivArea,Ames_small)
+lm.fit
+summary(lm.fit)
+
+#Use plot() to explore the model above. Do you suspect that some outliers have a large influence on the data?
+plot(lnm.fit)
+#there are some outliers, however most of the data seems to be reasonably grouped.
+
+lm.fit = lm(SalePrice ~ GrLivArea + LotArea)
+
+#Does controlling for LotArea change the qualitative conclusions from the previous regression? 
+#not very much, a greater ground living area still means greater sale price and is still very significant.
+#What about the quantitative results? 
+#the ceof went from 107 to 104 on ground living area
+#Does the direction of the change in the quantitative results make sense to you?
+#yes, adding lot area will reduce the coefficient since lotarea and grlivarea are related.
+
+summary(lm(SalePrice ~ GarageOutside,data=ameslist))
+#an indoor garage is worth $2849, however the p value does not indicate significance
+
+all<-lm(SalePrice~.,data=Ames)
+summary(all)
+#Is there a relationship between the predictors and the response?
+#yes there is a relationship 
+  
+#Which predictors appear to have a statistically significant relationship to the response?
+#MSSubClass,LotArea, OverallQual, OverallCond, YearBuilt,MasVnrArea,BsmtFinSF1, X1stFlrSF, X2ndFlrSF,
+#BsmtFullBath, BedroomAbvGr, KitchenAbvGr, TotRmsAbvGrd, Fireplaces, GarageCars,ScreenPorch,
+
+#What does the coefficient for the year variable suggest?
+#the trend of housing prices was downward for the duration of the data collection.
+
+plot(all)
+#yes, there are several large outliers 
+# one observation has very high leverage, some others have moderately high leverage.
+
+#Recall that the operator : designates the interaction between two variables. 
+#The operator * designates the interaction between the two variables, plus the main effects.
+
+#find interactions that are statistically significant
+inter1<-lm(SalePrice~GarageOutside*MoSold,data=ameslist)
+summary(inter1)
+
+inter2<-lm(SalePrice~GarageOutside:MoSold,data=ameslist)
+summary(inter2)
+
+#modify some variables
+trans_ln <- lm(SalePrice ~ ln(),data=ameslist)
+summary(trans_ln)
+
+trans_x2 <- lm(SalePrice ~ ()^2,data=ameslist)
+summary(trans_ln)
+
+trans_sqrt <- lm(SalePrice ~ ()^.5,data=ameslist)
+summary(trans_ln)
+
+
 
 
