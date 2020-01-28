@@ -105,10 +105,10 @@ plot(all)
 #The operator * designates the interaction between the two variables, plus the main effects.
 
 #find interactions that are statistically significant
-inter1<-lm(SalePrice~GarageOutside*MoSold,data=ameslist)
+inter1<-lm(SalePrice~GrLivArea*FullBath,data=ameslist)
 summary(inter1)
 
-inter2<-lm(SalePrice~GarageOutside:MoSold,data=ameslist)
+inter2<-lm(SalePrice~GrLivArea:FullBath,data=ameslist)
 summary(inter2)
 
 #modify some variables
