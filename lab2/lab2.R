@@ -108,12 +108,17 @@ plot(all)
 inter1<-lm(SalePrice~GrLivArea*FullBath,data=ameslist)
 summary(inter1)
 
-inter2<-lm(SalePrice~GrLivArea:FullBath,data=ameslist)
+inter2<-lm(SalePrice~LotFrontage:LotArea,data=ameslist)
 summary(inter2)
 
 #modify some variables
-trans_ln <- lm(SalePrice ~ ln(),data=ameslist)
+baseline <- lm(SalePrice ~ LotArea,data=ameslist)
+trans_ln <- lm(SalePrice ~ log(LotArea),data=ameslist)
 summary(trans_ln)
+summary(baseline)
+#the t value improved from 10 to 16 when using an ln function 
+#r^2 also got much better, going from 0.07 to 0.15
+
 
 trans_x2 <- lm(SalePrice ~ ()^2,data=ameslist)
 summary(trans_ln)
