@@ -70,7 +70,7 @@ lm.fit
 summary(lm.fit)
 
 #Use plot() to explore the model above. Do you suspect that some outliers have a large influence on the data?
-plot(lnm.fit)
+plot(lm.fit)
 #there are some outliers, however most of the data seems to be reasonably grouped.
 
 lm.fit = lm(SalePrice ~ GrLivArea + LotArea)
