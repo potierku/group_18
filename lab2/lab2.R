@@ -111,7 +111,7 @@ summary(inter1)
 inter2<-lm(SalePrice~LotFrontage:LotArea,data=ameslist)
 summary(inter2)
 
-#modify some variables
+
 baseline <- lm(SalePrice ~ LotArea,data=ameslist)
 trans_ln <- lm(SalePrice ~ log(LotArea),data=ameslist)
 summary(trans_ln)
@@ -119,13 +119,15 @@ summary(baseline)
 #the t value improved from 10 to 16 when using an ln function 
 #r^2 also got much better, going from 0.07 to 0.15
 
+trans_x2 <- lm(SalePrice ~ (LotArea*LotArea),data=ameslist)
+summary(trans_x2)
+summary(baseline)
+#There is no difference in result when the value is squared
 
-trans_x2 <- lm(SalePrice ~ ()^2,data=ameslist)
-summary(trans_ln)
-
-trans_sqrt <- lm(SalePrice ~ ()^.5,data=ameslist)
-summary(trans_ln)
-
-
+trans_sqrt <- lm(SalePrice ~ sqrt(LotArea),data=ameslist)
+summary(trans_sqrt)
+summary(baseline)
+#Using the squareroot, the r^2 value got better, going from .07 to .14
+#The t value also improved from 10 to 15
 
 
