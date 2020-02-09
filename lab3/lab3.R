@@ -160,11 +160,17 @@ ggplot(rmse_df,aes(x=rmse_complex,y=rmse_all))+ylab("RMSE")+ggtitle("RMSE vs. Mo
 ####part 2################################################
 
 set.seed(9)
-num_obs = nrow(Ames)
+num_obs <- nrow(ameslist)
 
-train_index = sample(num_obs, size = trunc(0.50 * num_obs))
-train_data = Ames[train_index, ]
-test_data = Ames[-train_index, ]
+train_index <- sample(num_obs, size = trunc(0.50 * num_obs))
+train_data <- ameslist[train_index, ]
+test_data <- ameslist[-train_index, ]
 
+fit_0 = lm(SalePrice ~ 1, data = train_data)
+get_complexity(fit_0)
 
+# train RMSE
+sqrt(mean((train_data$SalePrice - predict(fit_0, train_data)) ^ 2))
+# test RMSE
+sqrt(mean((test_data$SalePrice - predict(fit_0, test_data)) ^ 2))
 
