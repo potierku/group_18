@@ -157,3 +157,14 @@ ggplot(rmse_df,aes(x=rmse_complex,y=rmse_all))+ylab("RMSE")+ggtitle("RMSE vs. Mo
   geom_point()+scale_x_continuous(("Model Complexity"),labels=rmse_complex,breaks=rmse_complex)+
   theme(plot.title=element_text(hjust=0.5))
 
+####part 2################################################
+
+set.seed(9)
+num_obs = nrow(Ames)
+
+train_index = sample(num_obs, size = trunc(0.50 * num_obs))
+train_data = Ames[train_index, ]
+test_data = Ames[-train_index, ]
+
+
+
