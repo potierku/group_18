@@ -1,6 +1,6 @@
 library(ggplot2)
 library(rowr)
-
+library(reshape2)
 #functions
 rmse = function(model){
   sqrt(mean(resid(model)^2))
@@ -117,7 +117,7 @@ rmse_lm12 <- sort(sapply(ameslist,function(column) rmse(lm(SalePrice~Alley+Neigh
                                                              BldgType+ExterQual+Condition2+YearBuilt+
                                                              column,data=ameslist))))
 rmse12<-rmse_lm12[2]
-rm12<- lm(SalePrice~Alley+Neighborhood+GrLivArea+KitchenQual+RoofMatl+TotalBsmtSF+BsmtFinSF1+
+lm12<- lm(SalePrice~Alley+Neighborhood+GrLivArea+KitchenQual+RoofMatl+TotalBsmtSF+BsmtFinSF1+
             BldgType+ExterQual+Condition2+YearBuilt+Functional,data=ameslist)
 
 #thirteen variable
@@ -150,6 +150,7 @@ lm15 <- lm(SalePrice~Alley+Neighborhood+GrLivArea+KitchenQual+RoofMatl+TotalBsmt
              BldgType+ExterQual+Condition2+YearBuilt+Functional+SaleCondition+LotArea+GarageCars,data=ameslist)
 
 rmse_all <- c(rmse1,rmse2,rmse3,rmse4,rmse5,rmse6,rmse7,rmse8,rmse9,rmse10,rmse11,rmse12,rmse13,rmse14,rmse15)
+lm_all <- c(lm1,lm2,lm3,lm4,lm5,lm6,lm7,lm8,lm9,lm10,lm11,lm12,lm13,lm14,lm15)
 rmse_complex <- c(1:15)
 rmse_df <-data.frame(rmse_all,rmse_complex)
 
@@ -158,6 +159,9 @@ ggplot(rmse_df,aes(x=rmse_complex,y=rmse_all))+ylab("RMSE")+ggtitle("RMSE vs. Mo
   theme(plot.title=element_text(hjust=0.5))
 
 ####part 2################################################
+rmse_pred <- function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}
 
 set.seed(9)
 num_obs <- nrow(ameslist)
@@ -169,8 +173,34 @@ test_data <- ameslist[-train_index, ]
 fit_0 = lm(SalePrice ~ 1, data = train_data)
 get_complexity(fit_0)
 
-# train RMSE
-sqrt(mean((train_data$SalePrice - predict(fit_0, train_data)) ^ 2))
-# test RMSE
-sqrt(mean((test_data$SalePrice - predict(fit_0, test_data)) ^ 2))
+#simplified function as SalePrice is the only response variable for this exercise
+get_rmse = function(model, data) {
+  rmse_pred(actual = subset(data, select = "SalePrice", drop = TRUE),
+       predicted = predict(model, data))
+}
+
+get_rmse(model = fit_0, data = train_data) # train RMSE
+get_rmse(model = fit_0, data = test_data) # test RMSE
+
+rmse_train <-c(get_rmse(lm1,train_data),get_rmse(lm2,train_data),get_rmse(lm3,train_data),
+               get_rmse(lm4,train_data),get_rmse(lm5,train_data),get_rmse(lm6,train_data),
+               get_rmse(lm7,train_data),get_rmse(lm8,train_data),get_rmse(lm9,train_data),
+               get_rmse(lm10,train_data),get_rmse(lm11,train_data),get_rmse(lm12,train_data),
+               get_rmse(lm13,train_data),get_rmse(lm14,train_data),get_rmse(lm15,train_data))
+rmse_test <-c(get_rmse(lm1,test_data),get_rmse(lm2,test_data),get_rmse(lm3,test_data),
+              get_rmse(lm4,test_data),get_rmse(lm5,test_data),get_rmse(lm6,test_data),
+              get_rmse(lm7,test_data),get_rmse(lm8,test_data),get_rmse(lm9,test_data),
+              get_rmse(lm10,test_data),get_rmse(lm11,test_data),get_rmse(lm12,test_data),
+              get_rmse(lm13,test_data),get_rmse(lm14,test_data),get_rmse(lm15,test_data))
+rmse_df_2 <- data.frame(rmse_train,rmse_test,rmse_complex)
+rmse_df_2_melted <- melt(rmse_df_2,id="rmse_complex")
+
+#question 1
+ggplot(rmse_df_2_melted,aes(x=rmse_complex,y=value,color=variable))+ylab("RMSE")+ggtitle("RMSE vs. Model Complexity")+
+  geom_point()+scale_x_continuous(("Model Complexity"),labels=rmse_complex,breaks=rmse_complex)+
+  theme(plot.title=element_text(hjust=0.5))
+
+#question 2
+
+
 
