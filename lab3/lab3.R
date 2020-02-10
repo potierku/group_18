@@ -207,10 +207,6 @@ optimizer <- function(var){
     linear_rmse<-get_rmse(lm(SalePrice~var,data=train_data),train_data)
     x2_rmse<-get_rmse(lm(SalePrice~(var^2),data=train_data),train_data)
     ifelse((min(var)>0),ln_rmse<-get_rmse(lm(SalePrice~log(var),data=train_data),train_data),ln_rmse<-99999999)
-    #ifelse(length(unique(var))>2,poly2_rmse<-1.02*(get_rmse(lm(SalePrice~poly(var,2),data=train_data),train_data)),poly2_rmse<-999999999)
-    #ifelse(length(unique(var))>3,poly3_rmse<-get_rmse(lm(SalePrice~poly(var,3),data=train_data),train_data),poly3_rmse<-999999999)
-    #ifelse(length(unique(var))>4,poly4_rmse<-get_rmse(lm(SalePrice~poly(var,4),data=train_data),train_data),poly4_rmse<-999999999)
-    #ifelse(length(unique(var))>5,poly5_rmse<-get_rmse(lm(SalePrice~poly(var,5),data=train_data),train_data),poly5_rmse<-999999999)
     recip_rmse<-get_rmse(lm(SalePrice~(1/var),data=train_data),train_data)
     power_.2_rmse<-get_rmse(lm(SalePrice~I(var^.2),data=train_data),train_data)
     power_.4_rmse<-get_rmse(lm(SalePrice~I(var^.4),data=train_data),train_data)
@@ -232,7 +228,7 @@ sapply(train_data,optimizer)
 benchmark_lm <- lm(SalePrice~.,data=train_data)
 get_rmse(benchmark_lm,train_data)
 
-#knocked out variables, linear
+#knocked out variables, linear, used as a benchmark
 benchmark_simple <- lm(SalePrice~(MSSubClass)+(MSZoning)+log(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
     (Utilities)+(LotConfig)+(LandSlope)+(Condition1)+(BldgType)+(HouseStyle)+   
     (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(MasVnrType)+(MasVnrArea)+   
@@ -242,48 +238,24 @@ benchmark_simple <- lm(SalePrice~(MSSubClass)+(MSZoning)+log(LotArea)+ (Street)+
     (Fireplaces)+(GarageType)+(GarageCars)+(GarageArea)+(PavedDrive)+(WoodDeckSF)+(OpenPorchSF)+  
     (EnclosedPorch)+(X3SsnPorch)+(ScreenPorch)+(PoolArea)+(PoolQC)+(Fence)+(MiscVal)+      
     (MoSold)+(YrSold)+(SaleType),data=train_data)
+
 get_rmse(benchmark_simple,train_data)
 get_rmse(benchmark_simple,test_data)
 
 
-#knocked out droplevels variables
-master2_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+log(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
+#knocked out droplevels variables, KitchenAbvGr had a 0 in the test data set, 
+#so log so was not used, although it was optimal
+#many variables with added levels in the test data set had to be removed due to errors
+master2_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+I(LotArea^.2)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
     (LotConfig)+(LandSlope)+(Condition1)+(BldgType)+(HouseStyle)+   
-    poly(YearBuilt,2)+(YearRemodAdd)+(RoofStyle)+(MasVnrType)+(MasVnrArea)+   
-    (ExterQual)+(Foundation)+poly(BsmtFinSF1,2)+I(BsmtFinSF2^.2)+(BsmtUnfSF)+(TotalBsmtSF)+      
-    (HeatingQC)+(CentralAir)+(X1stFlrSF)+poly(X2ndFlrSF,2)+I(LowQualFinSF^.2)+I(GrLivArea^.8)+I(BsmtFullBath^.2)+ 
-    I(BsmtHalfBath^.2)+(FullBath)+I(HalfBath^.2)+(BedroomAbvGr)+poly(KitchenAbvGr,2)+(KitchenQual)+(TotRmsAbvGrd)+(Functional)+   
-    I(Fireplaces^.4)+(GarageType)+(GarageCars)+(GarageArea)+(PavedDrive)+I(WoodDeckSF^.4)+I(OpenPorchSF^.2)+  
-    I(EnclosedPorch^.2)+I(X3SsnPorch^.2)+(ScreenPorch)+(PoolArea)+(PoolQC)+(Fence)+I(MiscVal^.2)+      
-    (MoSold)+log(YrSold)+(SaleType),data=train_data)
+    (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(MasVnrType)+(MasVnrArea)+   
+    (ExterQual)+(Foundation)+(BsmtFinSF1)+I(BsmtFinSF2^.2)+(BsmtUnfSF)+I(TotalBsmtSF^.8)+      
+    (HeatingQC)+(CentralAir)+I(X1stFlrSF^.6)+poly(X2ndFlrSF,2)+I(LowQualFinSF^.2)+I(GrLivArea^.6)+I(BsmtFullBath^.2)+ 
+    I(BsmtHalfBath^.2)+(FullBath)+I(HalfBath^.2)+(BedroomAbvGr)+(KitchenAbvGr)+(KitchenQual)+(TotRmsAbvGrd)+(Functional)+   
+    I(Fireplaces^.6)+(GarageType)+(GarageCars)+(GarageArea)+(PavedDrive)+I(WoodDeckSF^.6)+I(OpenPorchSF^.2)+  
+    I(EnclosedPorch^.2)+(X3SsnPorch)+I(ScreenPorch^.6)+I(PoolArea^.2)+(PoolQC)+(Fence)+I(MiscVal^.2)+      
+    I(MoSold^.8)+log(YrSold)+(SaleType),data=train_data)
 
 get_rmse(master2_lm,train_data)
 get_rmse(master2_lm,test_data)
 
-
-
-#full with transformations
-master_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+log(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
-                  (Utilities)+(LotConfig)+(LandSlope)+(Neighborhood)+(Condition1)+(Condition2)+(BldgType)+(HouseStyle)+   
-                  poly(YearBuilt,2)+(YearRemodAdd)+(RoofStyle)+(RoofMatl)+(Exterior1st)+(Exterior2nd)+(MasVnrType)+(MasVnrArea)+   
-                  (ExterQual)+(ExterCond)+(Foundation)+poly(BsmtFinSF1,2)+I(BsmtFinSF2^.2)+(BsmtUnfSF)+(TotalBsmtSF)+(Heating)+      
-                  (HeatingQC)+(CentralAir)+(Electrical)+(X1stFlrSF)+poly(X2ndFlrSF,2)+I(LowQualFinSF^.2)+I(GrLivArea^.8)+I(BsmtFullBath^.2)+ 
-                  I(BsmtHalfBath^.2)+(FullBath)+I(HalfBath^.2)+(BedroomAbvGr)+log(KitchenAbvGr)+(KitchenQual)+(TotRmsAbvGrd)+(Functional)+   
-                  I(Fireplaces^.4)+(GarageType)+(GarageFinish)+(GarageCars)+(GarageArea)+(PavedDrive)+I(WoodDeckSF^.4)+I(OpenPorchSF^.2)+  
-                  I(EnclosedPorch^.2)+I(X3SsnPorch^.2)+(ScreenPorch)+(PoolArea)+(PoolQC)+(Fence)+(MiscFeature)+I(MiscVal^.2)+      
-                  (MoSold)+log(YrSold)+(SaleType)+(SaleCondition),data=train_data)
-
-summary(master_lm)
-test_data$Neighborhood <- droplevels(test_data$Neighborhood,"Blueste")
-test_data$Condition2 <- droplevels(test_data$Condition2,c("Feedr","PosA","PosN"))
-test_data$RoofMatl <- droplevels(test_data$RoofMatl,"Roll")
-test_data$Exterior1st <- droplevels(test_data$Exterior1st,c("AsphShn","BrkComm","ImStucc","Stone"))
-test_data$Exterior2nd <- droplevels(test_data$Exterior2nd,c("AsphShn","Stone"))
-test_data$ExterCond <- droplevels(test_data$ExterCond,"Ex")
-test_data$Heating <- droplevels(test_data$Heating,c("Floor","Wall"))
-test_data$Electrical <- droplevels(test_data$Electrical,c("FuseP",NA))
-test_data$MiscFeature <- droplevels(test_data$MiscFeature,"TenC")
-test_data$SaleCondition <- droplevels(test_data$SaleCondition,"AdjLand")
-
-get_rmse(benchmark_lm,test_data)
-summary(master2_lm)
