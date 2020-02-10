@@ -207,14 +207,45 @@ optimizer <- function(var){
     linear_rmse<-get_rmse(lm(SalePrice~var,data=train_data),train_data)
     x2_rmse<-get_rmse(lm(SalePrice~(var^2),data=train_data),train_data)
     ifelse((min(var)>0),ln_rmse<-get_rmse(lm(SalePrice~log(var),data=train_data),train_data),ln_rmse<-99999999)
-    
+    ifelse(length(unique(var))>2,poly2_rmse<-get_rmse(lm(SalePrice~poly(var,2),data=train_data),train_data),poly2_rmse<-999999999)
+    #ifelse(length(unique(var))>3,poly3_rmse<-get_rmse(lm(SalePrice~poly(var,3),data=train_data),train_data),poly3_rmse<-999999999)
+    #ifelse(length(unique(var))>4,poly4_rmse<-get_rmse(lm(SalePrice~poly(var,4),data=train_data),train_data),poly4_rmse<-999999999)
+    #ifelse(length(unique(var))>5,poly5_rmse<-get_rmse(lm(SalePrice~poly(var,5),data=train_data),train_data),poly5_rmse<-999999999)
+    recip_rmse<-get_rmse(lm(SalePrice~(1/var),data=train_data),train_data)
+    power_.2_rmse<-get_rmse(lm(SalePrice~I(var^.2),data=train_data),train_data)
+    power_.4_rmse<-get_rmse(lm(SalePrice~I(var^.4),data=train_data),train_data)
+    power_.5_rmse<-get_rmse(lm(SalePrice~I(var^.5),data=train_data),train_data)
+    power_.6_rmse<-get_rmse(lm(SalePrice~I(var^.6),data=train_data),train_data)
+    power_.8_rmse<-get_rmse(lm(SalePrice~I(var^.8),data=train_data),train_data)
     #vector of results
-    rmse_comp<-c(linear_rmse,x2_rmse,ln_rmse)
-    names(rmse_comp) <- c("linear","x^2","ln")
+    rmse_comp<-c(linear_rmse,x2_rmse,ln_rmse,poly2_rmse,recip_rmse,power_.2_rmse,
+                 power_.4_rmse,power_.5_rmse,power_.6_rmse,power_.8_rmse)
+    names(rmse_comp) <- c("linear","x^2","ln","poly2","reciprocal","power_.2_rmse","power_.4_rmse",
+                          "power_.5_rmse","power_.6_rmse","power_.8_rmse")
     rmse_comp[which.min(rmse_comp)]
   }
 }
 
 sapply(train_data,optimizer)
 
+benchmark_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
+  (Utilities)+(LotConfig)+(LandSlope)+(Neighborhood)+(Condition1)+(Condition2)+(BldgType)+(HouseStyle)+   
+  (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(RoofMatl)+(Exterior1st)+(Exterior2nd)+(MasVnrType)+(MasVnrArea)+   
+  (ExterQual)+(ExterCond)+(Foundation)+(BsmtFinSF1)+(BsmtFinSF2)+(BsmtUnfSF)+(TotalBsmtSF)+(Heating)+      
+  (HeatingQC)+(CentralAir)+(Electrical)+(X1stFlrSF)+(X2ndFlrSF)+(LowQualFinSF)+(GrLivArea)+(BsmtFullBath)+ 
+  (BsmtHalfBath)+(FullBath)+(HalfBath)+(BedroomAbvGr)+(KitchenAbvGr)+(KitchenQual)+(TotRmsAbvGrd)+(Functional)+   
+  (Fireplaces)+(GarageType)+(GarageFinish)+(GarageCars)+(GarageArea)+(PavedDrive)+(WoodDeckSF)+(OpenPorchSF)+  
+  (EnclosedPorch)+(X3SsnPorch)+(ScreenPorch)+(PoolArea)+(PoolQC)+(Fence)+(MiscFeature)+(MiscVal)+      
+  (MoSold)+(YrSold)+(SaleType)+(SaleCondition),data=train_data)
+get_rmse(benchmark_lm,train_data)
 
+benchmark_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
+  (Utilities)+(LotConfig)+(LandSlope)+(Neighborhood)+(Condition1)+(Condition2)+(BldgType)+(HouseStyle)+   
+  (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(RoofMatl)+(Exterior1st)+(Exterior2nd)+(MasVnrType)+(MasVnrArea)+   
+  (ExterQual)+(ExterCond)+(Foundation)+(BsmtFinSF1)+(BsmtFinSF2)+(BsmtUnfSF)+(TotalBsmtSF)+(Heating)+      
+  (HeatingQC)+(CentralAir)+(Electrical)+(X1stFlrSF)+(X2ndFlrSF)+(LowQualFinSF)+(GrLivArea)+(BsmtFullBath)+ 
+  (BsmtHalfBath)+(FullBath)+(HalfBath)+(BedroomAbvGr)+(KitchenAbvGr)+(KitchenQual)+(TotRmsAbvGrd)+(Functional)+   
+  (Fireplaces)+(GarageType)+(GarageFinish)+(GarageCars)+(GarageArea)+(PavedDrive)+(WoodDeckSF)+(OpenPorchSF)+  
+  (EnclosedPorch)+(X3SsnPorch)+(ScreenPorch)+(PoolArea)+(PoolQC)+(Fence)+(MiscFeature)+(MiscVal)+      
+  (MoSold)+(YrSold)+(SaleType)+(SaleCondition),data=train_data)
+get_rmse(benchmark_lm,train_data)
