@@ -207,7 +207,7 @@ optimizer <- function(var){
     linear_rmse<-get_rmse(lm(SalePrice~var,data=train_data),train_data)
     x2_rmse<-get_rmse(lm(SalePrice~(var^2),data=train_data),train_data)
     ifelse((min(var)>0),ln_rmse<-get_rmse(lm(SalePrice~log(var),data=train_data),train_data),ln_rmse<-99999999)
-    ifelse(length(unique(var))>2,poly2_rmse<-get_rmse(lm(SalePrice~poly(var,2),data=train_data),train_data),poly2_rmse<-999999999)
+    ifelse(length(unique(var))>2,poly2_rmse<-1.02*(get_rmse(lm(SalePrice~poly(var,2),data=train_data),train_data)),poly2_rmse<-999999999)
     #ifelse(length(unique(var))>3,poly3_rmse<-get_rmse(lm(SalePrice~poly(var,3),data=train_data),train_data),poly3_rmse<-999999999)
     #ifelse(length(unique(var))>4,poly4_rmse<-get_rmse(lm(SalePrice~poly(var,4),data=train_data),train_data),poly4_rmse<-999999999)
     #ifelse(length(unique(var))>5,poly5_rmse<-get_rmse(lm(SalePrice~poly(var,5),data=train_data),train_data),poly5_rmse<-999999999)
@@ -225,10 +225,14 @@ optimizer <- function(var){
     rmse_comp[which.min(rmse_comp)]
   }
 }
-
+#applies the optimization function to determine the best transformation
 sapply(train_data,optimizer)
 
-benchmark_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
+#all the variables in a linear regression
+benchmark_lm <- lm(SalePrice~.,data=train_data)
+get_rmse(benchmark_lm,train_data)
+
+master_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
   (Utilities)+(LotConfig)+(LandSlope)+(Neighborhood)+(Condition1)+(Condition2)+(BldgType)+(HouseStyle)+   
   (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(RoofMatl)+(Exterior1st)+(Exterior2nd)+(MasVnrType)+(MasVnrArea)+   
   (ExterQual)+(ExterCond)+(Foundation)+(BsmtFinSF1)+(BsmtFinSF2)+(BsmtUnfSF)+(TotalBsmtSF)+(Heating)+      
@@ -239,13 +243,3 @@ benchmark_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+(LotArea)+ (Street)+(Alley)
   (MoSold)+(YrSold)+(SaleType)+(SaleCondition),data=train_data)
 get_rmse(benchmark_lm,train_data)
 
-benchmark_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
-  (Utilities)+(LotConfig)+(LandSlope)+(Neighborhood)+(Condition1)+(Condition2)+(BldgType)+(HouseStyle)+   
-  (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(RoofMatl)+(Exterior1st)+(Exterior2nd)+(MasVnrType)+(MasVnrArea)+   
-  (ExterQual)+(ExterCond)+(Foundation)+(BsmtFinSF1)+(BsmtFinSF2)+(BsmtUnfSF)+(TotalBsmtSF)+(Heating)+      
-  (HeatingQC)+(CentralAir)+(Electrical)+(X1stFlrSF)+(X2ndFlrSF)+(LowQualFinSF)+(GrLivArea)+(BsmtFullBath)+ 
-  (BsmtHalfBath)+(FullBath)+(HalfBath)+(BedroomAbvGr)+(KitchenAbvGr)+(KitchenQual)+(TotRmsAbvGrd)+(Functional)+   
-  (Fireplaces)+(GarageType)+(GarageFinish)+(GarageCars)+(GarageArea)+(PavedDrive)+(WoodDeckSF)+(OpenPorchSF)+  
-  (EnclosedPorch)+(X3SsnPorch)+(ScreenPorch)+(PoolArea)+(PoolQC)+(Fence)+(MiscFeature)+(MiscVal)+      
-  (MoSold)+(YrSold)+(SaleType)+(SaleCondition),data=train_data)
-get_rmse(benchmark_lm,train_data)
