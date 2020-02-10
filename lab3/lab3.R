@@ -202,5 +202,19 @@ ggplot(rmse_df_2_melted,aes(x=rmse_complex,y=value,color=variable))+ylab("RMSE")
 
 #question 2
 
+optimizer <- function(var){
+  if (class(var) == "integer"){
+    linear_rmse<-get_rmse(lm(SalePrice~var,data=train_data),train_data)
+    x2_rmse<-get_rmse(lm(SalePrice~(var^2),data=train_data),train_data)
+    ifelse((min(var)>0),ln_rmse<-get_rmse(lm(SalePrice~log(var),data=train_data),train_data),ln_rmse<-99999999)
+    
+    #vector of results
+    rmse_comp<-c(linear_rmse,x2_rmse,ln_rmse)
+    names(rmse_comp) <- c("linear","x^2","ln")
+    rmse_comp[which.min(rmse_comp)]
+  }
+}
+
+sapply(train_data,optimizer)
 
 
