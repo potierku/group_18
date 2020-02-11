@@ -27,6 +27,8 @@ ameslist$PoolQC <- addNA(ameslist$PoolQC)
 ameslist$Fence <- addNA(ameslist$Fence)
 ameslist$MiscFeature <- addNA(ameslist$MiscFeature)
 
+#ameslist$Neighborhood <- addNA(ameslist$Neighborhood)
+
 #delete overallcond and overallqual
 #additionally, delete variables with unuseable NA (continuous variables that describe factor variables with y/n)
 ameslist <- within(ameslist,rm("OverallCond","OverallQual","LotFrontage","BsmtQual",
@@ -176,7 +178,7 @@ get_complexity(fit_0)
 #simplified function as SalePrice is the only response variable for this exercise
 get_rmse = function(model, data) {
   rmse_pred(actual = subset(data, select = "SalePrice", drop = TRUE),
-       predicted = predict(model, data))
+       predicted = predict(model, data,na.action=na.omit))
 }
 
 get_rmse(model = fit_0, data = train_data) # train RMSE
@@ -257,5 +259,28 @@ master2_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+I(LotArea^.2)+ (Street)+(Alle
     I(MoSold^.8)+log(YrSold)+(SaleType),data=train_data)
 
 get_rmse(master2_lm,train_data)
+test_data$Neighborhood[which (!(test_data$Neighborhood%in%train_data$Neighborhood))] <- NA
+
 get_rmse(master2_lm,test_data)
+
+which(summary(master2_lm)$coefficients[,4]<.5)
+
+#p-values <0.1
+master3_lm <- lm(SalePrice~(MSZoning)+I(LotArea^.2)+(LandContour)+  
+    (Condition1)+(HouseStyle)+(YearRemodAdd)+(MasVnrType)+(ExterQual)+
+    (Foundation)+I(TotalBsmtSF^.8)+(CentralAir)+I(X1stFlrSF^.6)+
+    poly(X2ndFlrSF,2)+I(GrLivArea^.6)+(BedroomAbvGr)+(KitchenAbvGr)+
+    (KitchenQual)+I(Fireplaces^.6)+(GarageType)+I(EnclosedPorch^.2)+
+    I(ScreenPorch^.6)+I(PoolArea^.2)+(PoolQC)+(SaleType),data=train_data)
+get_rmse(master3_lm,test_data)
+
+master4_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+I(LotArea^.2)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
+      (LotConfig)+(LandSlope)+(Condition1)+(BldgType)+(HouseStyle)+   
+      (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(MasVnrType)+(MasVnrArea)+   
+      (ExterQual)+(Foundation)+(BsmtFinSF1)+I(BsmtFinSF2^.2)+(BsmtUnfSF)+I(TotalBsmtSF^.8)+      
+      (HeatingQC)+(CentralAir)+I(X1stFlrSF^.6)+poly(X2ndFlrSF,2)+I(LowQualFinSF^.2)+I(GrLivArea^.6)+I(BsmtFullBath^.2)+ 
+      I(BsmtHalfBath^.2)+(FullBath)+I(HalfBath^.2)+(BedroomAbvGr)+(KitchenAbvGr)+(KitchenQual)+(TotRmsAbvGrd)+(Functional)+   
+      I(Fireplaces^.6)+(GarageType)+(GarageCars)+(GarageArea)+(PavedDrive)+I(WoodDeckSF^.6)+I(OpenPorchSF^.2)+  
+      I(EnclosedPorch^.2)+(X3SsnPorch)+I(ScreenPorch^.6)+I(PoolArea^.2)+(PoolQC)+(Fence)+I(MiscVal^.2)+      
+      I(MoSold^.8)+log(YrSold)+(SaleType),data=train_data)
 
