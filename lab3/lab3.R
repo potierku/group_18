@@ -268,6 +268,7 @@ master2_lm <- lm(SalePrice~(MSZoning)+I(LotArea^.2)+(LandContour)+
     poly(X2ndFlrSF,2)+I(GrLivArea^.6)+(BedroomAbvGr)+(KitchenAbvGr)+
     (KitchenQual)+I(Fireplaces^.6)+(GarageType)+I(EnclosedPorch^.2)+
     I(ScreenPorch^.6)+I(PoolArea^.2)+(PoolQC)+(SaleType),data=train_data)
+#final results
 get_rmse(master2_lm,train_data)
 get_rmse(master2_lm,test_data)
 
