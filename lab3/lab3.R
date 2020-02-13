@@ -27,8 +27,6 @@ ameslist$PoolQC <- addNA(ameslist$PoolQC)
 ameslist$Fence <- addNA(ameslist$Fence)
 ameslist$MiscFeature <- addNA(ameslist$MiscFeature)
 
-#ameslist$Neighborhood <- addNA(ameslist$Neighborhood)
-
 #delete overallcond and overallqual
 #additionally, delete variables with unuseable NA (continuous variables that describe factor variables with y/n)
 ameslist <- within(ameslist,rm("OverallCond","OverallQual","LotFrontage","BsmtQual",
@@ -230,7 +228,7 @@ sapply(train_data,optimizer)
 benchmark_lm <- lm(SalePrice~.,data=train_data)
 get_rmse(benchmark_lm,train_data)
 
-#knocked out variables, linear, used as a benchmark
+#knocked out variables that cause errors, linear, used as a benchmark
 benchmark_simple <- lm(SalePrice~(MSSubClass)+(MSZoning)+log(LotArea)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
     (Utilities)+(LotConfig)+(LandSlope)+(Condition1)+(BldgType)+(HouseStyle)+   
     (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(MasVnrType)+(MasVnrArea)+   
@@ -248,7 +246,7 @@ get_rmse(benchmark_simple,test_data)
 #knocked out droplevels variables, KitchenAbvGr had a 0 in the test data set, 
 #so log so was not used, although it was optimal
 #many variables with added levels in the test data set had to be removed due to errors
-master2_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+I(LotArea^.2)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
+master1_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+I(LotArea^.2)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
     (LotConfig)+(LandSlope)+(Condition1)+(BldgType)+(HouseStyle)+   
     (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(MasVnrType)+(MasVnrArea)+   
     (ExterQual)+(Foundation)+(BsmtFinSF1)+I(BsmtFinSF2^.2)+(BsmtUnfSF)+I(TotalBsmtSF^.8)+      
@@ -258,29 +256,18 @@ master2_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+I(LotArea^.2)+ (Street)+(Alle
     I(EnclosedPorch^.2)+(X3SsnPorch)+I(ScreenPorch^.6)+I(PoolArea^.2)+(PoolQC)+(Fence)+I(MiscVal^.2)+      
     I(MoSold^.8)+log(YrSold)+(SaleType),data=train_data)
 
-get_rmse(master2_lm,train_data)
-test_data$Neighborhood[which (!(test_data$Neighborhood%in%train_data$Neighborhood))] <- NA
+get_rmse(master1_lm,train_data)
+get_rmse(master1_lm,test_data)
 
-get_rmse(master2_lm,test_data)
+which(summary(master2_lm)$coefficients[,4]<.1)
 
-which(summary(master2_lm)$coefficients[,4]<.5)
-
-#p-values <0.1
-master3_lm <- lm(SalePrice~(MSZoning)+I(LotArea^.2)+(LandContour)+  
+#restricted model to variable with p-values <0.1
+master2_lm <- lm(SalePrice~(MSZoning)+I(LotArea^.2)+(LandContour)+  
     (Condition1)+(HouseStyle)+(YearRemodAdd)+(MasVnrType)+(ExterQual)+
     (Foundation)+I(TotalBsmtSF^.8)+(CentralAir)+I(X1stFlrSF^.6)+
     poly(X2ndFlrSF,2)+I(GrLivArea^.6)+(BedroomAbvGr)+(KitchenAbvGr)+
     (KitchenQual)+I(Fireplaces^.6)+(GarageType)+I(EnclosedPorch^.2)+
     I(ScreenPorch^.6)+I(PoolArea^.2)+(PoolQC)+(SaleType),data=train_data)
-get_rmse(master3_lm,test_data)
-
-master4_lm <- lm(SalePrice~(MSSubClass)+(MSZoning)+I(LotArea^.2)+ (Street)+(Alley)+(LotShape)+(LandContour)+  
-      (LotConfig)+(LandSlope)+(Condition1)+(BldgType)+(HouseStyle)+   
-      (YearBuilt)+(YearRemodAdd)+(RoofStyle)+(MasVnrType)+(MasVnrArea)+   
-      (ExterQual)+(Foundation)+(BsmtFinSF1)+I(BsmtFinSF2^.2)+(BsmtUnfSF)+I(TotalBsmtSF^.8)+      
-      (HeatingQC)+(CentralAir)+I(X1stFlrSF^.6)+poly(X2ndFlrSF,2)+I(LowQualFinSF^.2)+I(GrLivArea^.6)+I(BsmtFullBath^.2)+ 
-      I(BsmtHalfBath^.2)+(FullBath)+I(HalfBath^.2)+(BedroomAbvGr)+(KitchenAbvGr)+(KitchenQual)+(TotRmsAbvGrd)+(Functional)+   
-      I(Fireplaces^.6)+(GarageType)+(GarageCars)+(GarageArea)+(PavedDrive)+I(WoodDeckSF^.6)+I(OpenPorchSF^.2)+  
-      I(EnclosedPorch^.2)+(X3SsnPorch)+I(ScreenPorch^.6)+I(PoolArea^.2)+(PoolQC)+(Fence)+I(MiscVal^.2)+      
-      I(MoSold^.8)+log(YrSold)+(SaleType),data=train_data)
+get_rmse(master2_lm,train_data)
+get_rmse(master2_lm,test_data)
 
