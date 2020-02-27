@@ -1,0 +1,129 @@
+---
+title: "Class_Activity"
+author: "Nick Hiller, Kurtis Potier, Zane Shango"
+date: "2/27/2020"
+output: html_document
+---
+
+```{r}
+ameslist <- as.data.frame(read.table("https://msudataanalytics.github.io/SSC442/Labs/data/ames.csv",header = TRUE,sep = ","))
+
+#identifies columns with NA values
+na_cols <- names(which(colSums(is.na(ameslist))>0))
+
+#fixes for these columns
+ameslist$Alley <- addNA(ameslist$Alley) #lot is not on an alley
+ameslist$MasVnrType[is.na(ameslist$MasVnrType)] <- "None" #replace NA with None
+ameslist$MasVnrArea[is.na(ameslist$MasVnrArea)] <- 0 #replace NA with 0
+ameslist$Electrical <- addNA(ameslist$Electrical)
+ameslist$GarageType <- addNA(ameslist$GarageType)
+ameslist$GarageFinish <- addNA(ameslist$GarageFinish)
+ameslist$PoolQC <- addNA(ameslist$PoolQC)
+ameslist$Fence <- addNA(ameslist$Fence)
+ameslist$MiscFeature <- addNA(ameslist$MiscFeature)
+
+#delete overallcond and overallqual
+#additionally, delete variables with unuseable NA (continuous variables that describe factor variables with y/n)
+ameslist <- within(ameslist,rm("OverallCond","OverallQual","LotFrontage","BsmtQual",
+                               "BsmtCond","BsmtExposure","BsmtFinType1","BsmtFinType2","FireplaceQu",
+                               "GarageYrBlt","GarageQual","GarageCond"))
+
+ameslist$Fireplaces <- factor(ameslist$Fireplaces)
+
+set.seed(9)
+num_obs <- nrow(ameslist)
+
+train_index <- sample(num_obs, size = trunc(0.50 * num_obs))
+train_data <- ameslist[train_index, ]
+test_data <- ameslist[-train_index, ]
+
+
+
+
+```
+
+
+Part 1:
+
+```{r}
+library(rpart)
+library(caret)
+library(leaps)
+
+
+full_model <- lm(Fireplaces ~ ., data = train_data)
+
+summary(full_model)
+
+which(summary(full_model)$coefficients[,4]<.05)
+
+```
+
+
+
+
+
+```{r}
+tree_house_style <- rpart(Fireplaces ~ HouseStyle, data = train_data, cp = 0.0)
+tree_house_style
+
+plot_house_style <- rpart.plot::rpart.plot(tree_house_style)
+
+plot_house_style
+```
+
+
+Bigger houses are more likely to have a fireplace.
+
+
+```{r}
+total_tree <- rpart(Fireplaces ~ HouseStyle + BldgType + X1stFlrSF + Foundation, data = train_data)
+
+total_tree
+
+plot_total <- rpart.plot::rpart.plot(total_tree)
+
+plot_total
+
+
+```
+
+
+
+
+```{r}
+library(ISLR)
+library(lattice)
+library(ggplot2)
+library(ellipse)
+
+library(e1071)
+
+trn_pred = predict(total_tree, train_data, type = "class")
+tst_pred = predict(total_tree, test_data, type = "class")
+
+
+trn_tab = table(predicted = trn_pred, actual = train_data$Fireplace)
+tst_tab = table(predicted = tst_pred, actual = test_data$Fireplace)
+trn_tab
+tst_tab
+
+trn_con_mat  = confusionMatrix(trn_tab)
+tst_con_mat = confusionMatrix(tst_tab)
+
+trn_con_mat
+tst_con_mat
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
