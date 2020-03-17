@@ -25,11 +25,9 @@ ameslist$MiscFeature <- addNA(ameslist$MiscFeature)
 #delete overallcond and overallqual
 #additionally, delete variables with unuseable NA (continuous variables that describe factor variables with y/n)
 ameslist <- within(ameslist,rm("OverallCond","OverallQual","LotFrontage","BsmtQual",
-                               "BsmtCond","BsmtExposure","BsmtFinType1","BsmtFinType2","FireplaceQu",
+                             "BsmtCond","BsmtExposure","BsmtFinType1","BsmtFinType2","FireplaceQu",
                                "GarageYrBlt","GarageQual","GarageCond"))
-
-ameslist$Fireplaces <- factor(ameslist$Fireplaces)
-
+ameslist$Fireplaces[which(ameslist$Fireplaces>0)] <- 1
 set.seed(9)
 num_obs <- nrow(ameslist)
 
@@ -56,7 +54,8 @@ full_model <- lm(Fireplaces ~ ., data = train_data)
 summary(full_model)
 
 which(summary(full_model)$coefficients[,4]<.05)
-
+train_data$Fireplaces <- factor(train_data$Fireplaces)
+test_data$Fireplaces <- factor(test_data$Fireplaces)
 ```
 
 
@@ -77,7 +76,7 @@ Bigger houses are more likely to have a fireplace.
 
 
 ```{r}
-total_tree <- rpart(Fireplaces ~ HouseStyle + BldgType + X1stFlrSF + Foundation, data = train_data)
+total_tree <- rpart(Fireplaces ~ HouseStyle + BldgType + X1stFlrSF + Foundation + MiscFeature + PavedDrive, data = train_data)
 
 total_tree
 
