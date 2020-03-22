@@ -51,29 +51,49 @@ spam_tst_pred = ifelse(predict(fit_caps, spam_tst, type = "response") > 0.5,
                        "spam",
                        "nonspam")
 (conf_mat_caps = make_conf_mat(predicted = spam_tst_pred, actual = spam_tst$type))
-accuracy_caps <-length(which(spam_tst_pred==spam_tst$type))/length(spam_tst$type)
+(accuracy_caps <-length(which(spam_tst_pred==spam_tst$type))/length(spam_tst$type))
 
 ############selected##############
 spam_tst_pred = ifelse(predict(fit_selected, spam_tst, type = "response") > 0.5,
                        "spam",
                        "nonspam")
 (conf_mat_selected = make_conf_mat(predicted = spam_tst_pred, actual = spam_tst$type))
-accuracy_selected <-length(which(spam_tst_pred==spam_tst$type))/length(spam_tst$type)
+(accuracy_selected <-length(which(spam_tst_pred==spam_tst$type))/length(spam_tst$type))
 
 ###########additive############
 spam_tst_pred = ifelse(predict(fit_additive, spam_tst, type = "response") > 0.5,
                        "spam",
                        "nonspam")
 (conf_mat_additive = make_conf_mat(predicted = spam_tst_pred, actual = spam_tst$type))
-accuracy_additive <-length(which(spam_tst_pred==spam_tst$type))/length(spam_tst$type)
+(accuracy_additive <-length(which(spam_tst_pred==spam_tst$type))/length(spam_tst$type))
 
 ###########over##############
 spam_tst_pred = ifelse(predict(fit_over, spam_tst, type = "response") > 0.5,
                        "spam",
                        "nonspam")
 (conf_mat_over = make_conf_mat(predicted = spam_tst_pred, actual = spam_tst$type))
-accuracy_over <-length(which(spam_tst_pred==spam_tst$type))/length(spam_tst$type)
+(accuracy_over <-length(which(spam_tst_pred==spam_tst$type))/length(spam_tst$type))
 
 ############table############
 table(spam_tst$type) / nrow(spam_tst)
 
+#####################Exercise 2######################
+bank <-read.csv("bank.csv",header=TRUE) #local copy, change to web once fixed
+#bank <-as.data.frame(read.table("https://msudataanalytics.github.io/SSC442/data/bank.csv",header = TRUE,sep = ","))
+tibble::as.tibble(bank)
+is.factor(bank$y)
+levels(bank$y)
+set.seed(15)
+bank_idx = sample(nrow(bank), round(nrow(bank) / 2))
+bank_trn = bank[bank_idx, ]
+bank_tst = bank[-bank_idx, ]
+
+bank_reg <- glm(y ~ .,data = bank_trn, family = binomial)
+set.seed(3)
+cv.glm(bank_trn, bank_reg, K=10)$delta[1]
+
+bank_tst_pred = ifelse(predict(bank_reg, bank_tst, type = "response") > 0.5,
+                       "yes",
+                       "no")
+(conf_mat_bank_reg = make_conf_mat(predicted = bank_tst_pred, actual = bank_tst$y))
+(accuracy_bank_reg <-length(which(bank_tst_pred==bank_tst$y))/length(bank_tst$y))
