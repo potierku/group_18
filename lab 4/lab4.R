@@ -1,4 +1,5 @@
 library(kernlab)
+library(ggplot2)
 data("spam")
 tibble::as.tibble(spam)
 
@@ -83,12 +84,19 @@ bank <-read.csv("bank.csv",header=TRUE) #local copy, change to web once fixed
 tibble::as.tibble(bank)
 is.factor(bank$y)
 levels(bank$y)
+
+#collapsed job to blue and white collar as other types were too specific to be 
+#significant and useful, some errors due to unemployed and retired
+bank$job_collapsed <- ifelse(bank$job=="blue-collar","blue-collar","white-collar")
 set.seed(15)
 bank_idx = sample(nrow(bank), round(nrow(bank) / 2))
 bank_trn = bank[bank_idx, ]
 bank_tst = bank[-bank_idx, ]
 
-bank_reg <- glm(y ~ .,data = bank_trn, family = binomial)
+#bank_reg <- glm(y ~ .,data = bank_trn, family = binomial)
+bank_reg <- glm(y~ job_collapsed + marital + balance + housing + loan + contact + 
+                  day + month + poly(duration,2) + 
+                  previous,data = bank_trn, family = binomial)
 set.seed(3)
 cv.glm(bank_trn, bank_reg, K=10)$delta[1]
 
@@ -97,3 +105,6 @@ bank_tst_pred = ifelse(predict(bank_reg, bank_tst, type = "response") > 0.5,
                        "no")
 (conf_mat_bank_reg = make_conf_mat(predicted = bank_tst_pred, actual = bank_tst$y))
 (accuracy_bank_reg <-length(which(bank_tst_pred==bank_tst$y))/length(bank_tst$y))
+
+ggplot(data=bank,aes(y=y, x=age))+geom_point()
+summary(glm(y~age + poly(duration,2), data=bank_trn, family=binomial))
