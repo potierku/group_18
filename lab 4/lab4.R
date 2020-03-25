@@ -47,6 +47,7 @@ cv.glm(spam_trn, fit_over, K = 100)$delta[1]
 make_conf_mat = function(predicted, actual) {
   table(predicted = predicted, actual = actual)
 }
+
 #############caps########
 spam_tst_pred = ifelse(predict(fit_caps, spam_tst, type = "response") > 0.5,
                        "spam",
@@ -79,24 +80,27 @@ spam_tst_pred = ifelse(predict(fit_over, spam_tst, type = "response") > 0.5,
 table(spam_tst$type) / nrow(spam_tst)
 
 #####################Exercise 2######################
-bank <-read.csv("bank.csv",header=TRUE) #local copy, change to web once fixed
-#bank <-as.data.frame(read.table("https://msudataanalytics.github.io/SSC442/data/bank.csv",header = TRUE,sep = ","))
+#bank <-read.csv("bank.csv",header=TRUE) #local copy, change to web once fixed
+bank <-as.data.frame(read.table("https://msudataanalytics.github.io/SSC442/Labs/data/bank.csv",header = TRUE,sep = ","))
 tibble::as.tibble(bank)
 is.factor(bank$y)
 levels(bank$y)
 
-#collapsed job to blue and white collar as other types were too specific to be 
-#significant and useful, some errors due to unemployed and retired
-bank$job_collapsed <- ifelse(bank$job=="blue-collar","blue-collar","white-collar")
+bank$job_collapsed = ifelse(bank$job %in% c('blue-collar','housemaid','technician','services'),"blue-collar", 
+ifelse(bank$job %in% c("entrepreneur","admin.","management","self-employed"), "white-collar", 
+ifelse(bank$job %in% c("student","retired","unemployed"), "not-working",
+ifelse(bank$job %in% c("unknown"), "unknown", NA))))
+
 set.seed(15)
 bank_idx = sample(nrow(bank), round(nrow(bank) / 2))
 bank_trn = bank[bank_idx, ]
 bank_tst = bank[-bank_idx, ]
 
 #bank_reg <- glm(y ~ .,data = bank_trn, family = binomial)
-bank_reg <- glm(y~ job_collapsed + marital + balance + housing + loan + contact + 
+bank_reg <- glm(y~ job_collapsed + marital + housing + loan + contact + 
                   day + month + poly(duration,2) + 
                   previous,data = bank_trn, family = binomial)
+#Discuss coefficients in markdown
 set.seed(3)
 cv.glm(bank_trn, bank_reg, K=10)$delta[1]
 
@@ -105,6 +109,3 @@ bank_tst_pred = ifelse(predict(bank_reg, bank_tst, type = "response") > 0.5,
                        "no")
 (conf_mat_bank_reg = make_conf_mat(predicted = bank_tst_pred, actual = bank_tst$y))
 (accuracy_bank_reg <-length(which(bank_tst_pred==bank_tst$y))/length(bank_tst$y))
-
-ggplot(data=bank,aes(y=y, x=age))+geom_point()
-summary(glm(y~age + poly(duration,2), data=bank_trn, family=binomial))
