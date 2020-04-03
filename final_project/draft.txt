@@ -1,0 +1,101 @@
+Year,Round,Overall,Team,Player,Nat.,Pos,Age,To,Amateur Team,Amateur Lg.,NHL,GP,G,A,PTS,+/-,PIM
+1991,1,1,Quebec Nordiques,Eric Lindros\lindrer01,CA,C,18,2007,Oshawa,OHL,x,760,372,493,865,215,1398
+1991,1,2,San Jose Sharks,Pat Falloon\fallopa01,CA,RW,18,2000,Spokane,WHL,x,575,143,179,322,-66,141
+1991,1,3,New Jersey Devils,Scott Niedermayer\niedesc01,CA,D,18,2010,Kamloops,WHL,x,1263,172,568,740,167,784
+1991,1,4,New York Islanders,Scott Lachance\lachasc01,US,D,18,2004,Boston University,H-East,x,819,31,112,143,-76,567
+1991,1,5,Winnipeg Jets,Aaron Ward\wardaa01,CA,D,18,2010,Michigan,CCHA,x,839,44,107,151,-41,736
+1991,1,6,Philadelphia Flyers,Peter Forsberg\forsbpe01,SE,C,18,2011,MoDo Ornskoldsvik,Sweden,x,708,249,636,885,238,690
+1991,1,7,Vancouver Canucks,Alek Stojanov\stojaal01,CA,RW,18,1997,Hamilton,OHL,x,107,2,5,7,-12,222
+1991,1,8,Minnesota North Stars,Richard Matvichuk\matviri01,CA,D,18,2007,Saskatoon,WHL,x,796,39,139,178,46,624
+1991,1,9,Hartford Whalers,Patrick Poulin\poulipa01,CA,C,18,2002,St. Hyacinthe,QMJHL,x,634,101,134,235,-30,299
+1991,1,10,Detroit Red Wings,Martin Lapointe\lapoima01,CA,RW,18,2008,Laval,QMJHL,x,991,181,200,381,-40,1417
+1991,1,11,New Jersey Devils,Brian Rolston\rolstbr01,US,C,18,2012,Detroit Compuware,NAHL,x,1256,342,419,761,65,472
+1991,1,12,Edmonton Oilers,Tyler Wright\wrighty01,CA,C,18,2006,Swift Current,WHL,x,613,79,70,149,-115,854
+1991,1,13,Buffalo Sabres,Philippe Boucher\bouchph01,CA,D,18,2009,Granby,QMJHL,x,748,94,206,300,57,702
+1991,1,14,Washington Capitals,Pat Peake\peakepa01,US,C,18,1998,Detroit,OHL,x,134,28,41,69,3,105
+1991,1,15,New York Rangers,Alex Kovalev\kovalal01,SU,RW,18,2013,Dynamo Moscow,Russia,x,1316,430,599,1029,-31,1304
+1991,1,16,Pittsburgh Penguins,Markus Naslund\nasluma02,SE,LW,18,2009,MoDo Ornskoldsvik,Sweden,x,1117,395,474,869,6,736
+1991,1,17,Montreal Canadiens,Brent Bilodeau,US,,,,Seattle,WHL,,,,,,,
+1991,1,18,Boston Bruins,Glen Murray\murragl01,CA,RW,18,2008,Sudbury,OHL,x,1009,337,314,651,14,679
+1991,1,19,Calgary Flames,Niklas Sundblad\sundbni01,SE,RW,18,1996,AIK Solna,Sweden,x,2,0,0,0,0,0
+1991,1,20,Edmonton Oilers,Martin Rucinsky\rucinma01,CS,LW,20,2008,Litvinov,Czech,x,961,241,371,612,46,821
+1991,1,21,Washington Capitals,Trevor Halverson\halvetr01,CA,LW,20,1999,North Bay,OHL,x,17,0,4,4,-5,28
+1991,1,22,Chicago Blackhawks,Dean McAmmond\mcammde01,CA,C,18,2010,Prince Albert,WHL,x,996,186,262,448,36,490
+1992,1,1,Tampa Bay Lightning,Roman Hamrlik\hamrlro01,CS,D,18,2013,ZPS Zlin,Czech,x,1395,155,483,638,-49,1408
+1992,1,2,Ottawa Senators,Alexei Yashin\yashial01,SU,C,18,2007,Dynamo Moscow,Russia,x,850,337,444,781,-83,401
+1992,1,3,San Jose Sharks,Mike Rathje\rathjmi01,CA,D,18,2007,Medicine Hat,WHL,x,768,30,150,180,26,491
+1992,1,4,Quebec Nordiques,Todd Warriner\warrito01,CA,LW,18,2003,Windsor,OHL,x,453,65,89,154,-37,249
+1992,1,5,New York Islanders,Darius Kasparaitis\kaspada01,SU,D,19,2007,Dynamo Moscow,Russia,x,863,27,136,163,39,1379
+1992,1,6,Calgary Flames,Cory Stillman\stillco01,CA,LW,18,2011,Windsor,OHL,x,1025,278,449,727,-20,489
+1992,1,7,Philadelphia Flyers,Ryan Sittler,CA,,,,Nichols,High-NY,,,,,,,
+1992,1,8,Toronto Maple Leafs,Brandon Convery\convebr01,CA,C,18,1999,Sudbury,OHL,x,72,9,19,28,-12,36
+1992,1,9,Hartford Whalers,Robert Petrovicky\petroro01,CS,C,18,2001,Dukla Trencin,Slovakia,x,208,27,38,65,-15,118
+1992,1,10,San Jose Sharks,Andrei Nazarov\nazaran01,SU,LW,18,2006,Dynamo Moscow,Russia,x,571,53,71,124,-69,1409
+1992,1,11,Buffalo Sabres,David Cooper\coopeda01,CA,D,18,2001,Medicine Hat,WHL,x,30,3,7,10,-2,24
+1992,1,12,Chicago Blackhawks,Sergei Krivokrasov\krivose01,SU,RW,18,2002,CSKA Moscow,Russia,x,450,86,109,195,0,288
+1992,1,13,Edmonton Oilers,Joe Hulbig\hulbijo01,US,LW,18,2001,St. Sebastian's,High-MA,x,55,4,4,8,-12,16
+1992,1,14,Washington Capitals,Sergei Gonchar\gonchse01,SU,D,18,2015,Traktor Chelyabinsk,KHL,x,1301,220,591,811,33,981
+1992,1,15,Philadelphia Flyers,Jason Bowen\bowenja01,CA,D,18,1998,Tri-City,WHL,x,77,2,6,8,12,109
+1992,1,16,Boston Bruins,Dmitri Kvartalnov\kvartdm01,SU,LW,26,1994,San Diego IHL,IHL,x,112,42,49,91,0,26
+1992,1,17,Winnipeg Jets,Sergei Bautin\bautise01,SU,D,25,1996,Dynamo Moscow,Russia,x,132,5,25,30,-15,176
+1992,1,18,New Jersey Devils,Jason Smith\smithja01,CA,D,18,2009,Regina,WHL,x,1008,41,128,169,26,1099
+1992,1,19,Pittsburgh Penguins,Martin Straka\strakma01,CS,C,20,2008,Skoda Plzen,Czech,x,954,257,460,717,67,360
+1992,1,20,Montreal Canadiens,David Wilkie\wilkida01,US,D,18,2001,Kamloops,WHL,x,167,10,26,36,-62,165
+1992,1,21,Vancouver Canucks,Libor Polasek,CZ,,,,TJ Vitkovice,Czech,,,,,,,
+1992,1,22,Detroit Red Wings,Curtis Bowen,CA,,,,Ottawa,OHL,,,,,,,
+1992,1,23,Toronto Maple Leafs,Grant Marshall\marshgr01,CA,RW,19,2006,Ottawa,OHL,x,700,92,147,239,-57,793
+1992,1,24,New York Rangers,Peter Ferraro\ferrape01,US,LW,19,2002,Waterloo,USHL,x,92,9,15,24,-1,58
+1993,1,1,Ottawa Senators,Alexandre Daigle\daiglal02,CA,C,18,2006,Victoriaville,QMJHL,x,616,129,198,327,-176,186
+1993,1,2,Hartford Whalers,Chris Pronger\prongch01,CA,D,18,2012,Peterborough,OHL,x,1167,157,541,698,183,1590
+1993,1,3,Tampa Bay Lightning,Chris Gratton\grattch01,CA,C,18,2009,Kingston,OHL,x,1092,214,354,568,-143,1638
+1993,1,4,Anaheim Ducks,Paul Kariya\kariypa01,CA,LW,18,2010,U. of Maine,H-East,x,989,402,587,989,31,399
+1993,1,5,Florida Panthers,Rob Niedermayer\niedero01,CA,C,18,2011,Medicine Hat,WHL,x,1153,186,283,469,-123,904
+1993,1,6,San Jose Sharks,Viktor Kozlov\kozlovi01,SU,C,18,2009,Dynamo Moscow,Russia,x,897,198,339,537,-3,248
+1993,1,7,Edmonton Oilers,Jason Arnott\arnotja01,CA,C,18,2012,Oshawa,OHL,x,1244,417,521,938,81,1242
+1993,1,8,New York Rangers,Niklas Sundstrom\sundsni01,SE,RW,18,2006,MoDo Ornskoldsvik,Sweden,x,750,117,232,349,45,256
+1993,1,9,Dallas Stars,Todd Harvey\harveto01,CA,RW,18,2006,Detroit,OHL,x,671,91,132,223,19,950
+1993,1,10,Quebec Nordiques,Jocelyn Thibault\thibajo01,CA,G,18,2008,Sherbrooke,QMJHL,x,586,0,6,6,0,18
+1993,1,11,Washington Capitals,Brendan Witt\wittbr01,CA,D,18,2010,Seattle,WHL,x,890,25,96,121,-91,1424
+1993,1,12,Toronto Maple Leafs,Kenny Jonsson\jonsske01,SE,D,18,2004,Rogle Angelholm,Sweden,x,686,63,204,267,-16,298
+1993,1,13,New Jersey Devils,Denis Pederson\pederde01,CA,C,18,2003,Prince Albert,WHL,x,435,57,71,128,-18,398
+1993,1,14,Quebec Nordiques,Adam Deadmarsh\deadmad01,CA,RW,18,2003,Portland,WHL,x,567,184,189,373,43,819
+1993,1,15,Winnipeg Jets,Mats Lindgren\lindgma01,SE,C,18,2003,Skelleftea,Sweden,x,387,54,74,128,1,146
+1993,1,16,Edmonton Oilers,Nick Stajduhar\stajdni01,CA,D,18,1996,London,OHL,x,2,0,0,0,2,4
+1993,1,17,Washington Capitals,Jason Allison\allisja02,CA,C,18,2006,London,OHL,x,552,154,331,485,17,441
+1993,1,18,Calgary Flames,Jesper Mattsson,SE,,,,Malmo,Sweden,,,,,,,
+1993,1,19,Toronto Maple Leafs,Landon Wilson\wilsola02,US,RW,18,2009,Dubuque,USHL,x,375,53,66,119,5,352
+1993,1,20,Vancouver Canucks,Mike Wilson\wilsomi02,CA,D,18,2003,Sudbury,OHL,x,336,16,41,57,43,264
+1993,1,21,Montreal Canadiens,Saku Koivu\koivusa01,FI,C,18,2014,TPS Turku,Finland,x,1124,255,577,832,10,809
+1993,1,22,Detroit Red Wings,Anders Eriksson\eriksan01,SE,D,18,2010,MoDo Ornskoldsvik,Sweden,x,572,22,154,176,43,242
+1993,1,23,New York Islanders,Todd Bertuzzi\bertuto01,CA,RW,18,2014,Guelph,OHL,x,1159,314,456,770,-44,1478
+1993,1,24,Chicago Blackhawks,Eric Lecompte,CA,,,,Hull,QMJHL,,,,,,,
+1993,1,25,Boston Bruins,Kevyn Adams\adamske01,US,C,18,2008,Miami (Ohio),CCHA,x,540,59,77,136,-38,317
+1993,1,26,Pittsburgh Penguins,Stefan Bergkvist\bergkst01,SE,D,18,1997,Leksand,Sweden,x,7,0,0,0,-1,9
+1994,1,1,Florida Panthers,Ed Jovanovski\jovaned01,CA,D,18,2014,Windsor,OHL,x,1128,137,363,500,-86,1491
+1994,1,2,Anaheim Ducks,Oleg Tverdovsky\tverdol01,SU,D,18,2007,Krylja Sovetov,Russia,x,713,77,240,317,-21,291
+1994,1,3,Ottawa Senators,Radek Bonk\bonkra01,CS,C,18,2009,Las Vegas,IHL,x,969,194,303,497,-22,581
+1994,1,4,Edmonton Oilers,Jason Bonsignore\bonsija01,US,C,18,1999,Niagara Falls,OHL,x,79,3,13,16,-22,34
+1994,1,5,Hartford Whalers,Jeff O'Neill\oneilje01,CA,RW,18,2007,Guelph,OHL,x,821,237,259,496,-115,670
+1994,1,6,Edmonton Oilers,Ryan Smyth\smythry01,CA,LW,18,2014,Moose Jaw,WHL,x,1270,386,456,842,-54,976
+1994,1,7,Los Angeles Kings,Jamie Storr\storrja01,CA,G,18,2004,Owen Sound,OHL,x,219,0,3,3,0,26
+1994,1,8,Tampa Bay Lightning,Jason Wiemer\wiemeja01,CA,C,18,2006,Portland,WHL,x,726,90,112,202,-81,1420
+1994,1,9,New York Islanders,Brett Lindros\lindrbr01,CA,RW,18,1996,Kingston,OHL,x,51,2,5,7,-14,147
+1994,1,10,Washington Capitals,Nolan Baumgartner\baumgno01,CA,D,18,2010,Kamloops,WHL,x,143,7,40,47,11,69
+1994,1,11,San Jose Sharks,Jeff Friesen\friesje01,CA,LW,18,2007,Regina,WHL,x,893,218,298,516,-8,488
+1994,1,12,Quebec Nordiques,Wade Belak\belakwa01,CA,RW,18,2011,Saskatoon,WHL,x,549,8,25,33,-38,1263
+1994,1,13,Vancouver Canucks,Mattias Ohlund\ohlunma01,SE,D,18,2011,Pitea,Sweden,x,909,93,250,343,-6,885
+1994,1,14,Chicago Blackhawks,Ethan Moreau\moreaet01,CA,LW,18,2012,Niagara Falls,OHL,x,928,147,140,287,-15,1110
+1994,1,15,Washington Capitals,Alexander Kharlamov,RU,,,,CSKA Moscow,Russia,,,,,,,
+1994,1,16,Toronto Maple Leafs,Eric Fichaud\fichaer01,CA,G,18,2001,Chictoutimi,QMJHL,x,95,0,1,1,0,4
+1994,1,17,Buffalo Sabres,Wayne Primeau\primewa01,CA,C,18,2010,Owen Sound,OHL,x,774,69,125,194,-95,789
+1994,1,18,Montreal Canadiens,Brad Brown\brownbr01,CA,D,18,2004,North Bay,OHL,x,330,2,27,29,-16,747
+1994,1,19,Calgary Flames,Chris Dingman\dingmch01,CA,LW,18,2006,Brandon,WHL,x,385,15,19,34,-58,769
+1994,1,20,Dallas Stars,Jason Botterill\botteja01,CA,LW,18,2004,Michigan,CCHA,x,88,5,9,14,-16,89
+1994,1,21,Boston Bruins,Evgeni Ryabchikov,RU,,,,Molot-Perm,Russia,,,,,,,
+1994,1,22,Quebec Nordiques,Jeffrey Kealty,US,,,,Catholic Memorial,High-MA,,,,,,,
+1994,1,23,Detroit Red Wings,Yan Golubovsky\golubya01,SU,D,18,2001,Dynamo-2 Moscow,Russia,x,56,1,7,8,11,32
+1994,1,24,Pittsburgh Penguins,Chris Wells\wellsch01,CA,C,18,2000,Seattle,WHL,x,195,9,20,29,-6,193
+1994,1,25,New Jersey Devils,Vadim Sharifijanov\shariva01,SU,LW,18,2000,Salavat Yulayev Ufa,KHL,x,92,16,21,37,-2,50
+1994,1,26,New York Rangers,Dan Cloutier\cloutda01,CA,G,18,2008,Sault Ste. Marie,OHL,x,351,0,5,5,0,147
+1995,1,1,Ottawa Senators,Bryan Berard\berarbr01,US,D,18,2008,Detroit,OHL,x,619,76,247,323,-98,500
+1995,1,2,New York Islanders,Wade Redden\reddewa01,CA,D,18,2013,Brandon,WHL,x,1023,109,348,457,160,665
