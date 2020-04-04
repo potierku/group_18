@@ -1,4 +1,5 @@
 library(ggplot2)
+library(readxl)
 #import draft data
 draft <- read.csv("draft.txt")
 
@@ -13,6 +14,19 @@ draft$PIM[is.na(draft$PIM)] <-0
 #replace POS that is blank with NI (no information) 
 draft$Pos[which(draft$Pos=='')] <-NA 
 
+#import standings data
+standings <- read_excel("standings.xlsx")
+
+
+
 #predict points using draft position, exempt goalies
+ggplot(data=draft,aes(x=Overall, y=PTS))+
+  geom_point()
+
 players <- draft[POS!=G]
-lm(PTS ~ Overall,data=draft)
+pts_overall <- lm(PTS ~ poly(Overall,2),data=draft)
+summary(pts_overall)
+
+#need data on standings
+#year is the start year of the season
+
