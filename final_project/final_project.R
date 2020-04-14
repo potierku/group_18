@@ -1,5 +1,5 @@
 library(ggplot2)
-library(readxl)
+
 #import draft data
 draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt")
 
@@ -17,14 +17,18 @@ draft$Pos[which(is.na(draft$Pos))] <- "unknown"
 draft$Pos <- as.factor(draft$Pos)
 
 #import standings data (Kurtis)
-standings <- read_excel("standings.xlsx")
+standings <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/standings.csv")
 
-#need data on standings
+#import goalies data
+goalies <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/goalies_data.csv")
+
+#import skaters data
+skaters <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/skaters_data.csv")
+
+#import city temps and years old
+temps <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/NHL_city_temp_data.csv")
+
 #year is the start year of the season
-
-#age of teams data
-
-#
 
 #predict points using draft position, exempt goalies
 #may split up by position
