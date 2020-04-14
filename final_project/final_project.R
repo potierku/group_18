@@ -1,7 +1,7 @@
 library(ggplot2)
 library(readxl)
 #import draft data
-draft <- read.csv("draft.txt") #change these to github links
+draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt")
 
 #replace NA values in stats with 0
 draft$GP[is.na(draft$GP)] <-0
