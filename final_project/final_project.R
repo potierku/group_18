@@ -1,5 +1,5 @@
 library(ggplot2)
-
+library(dplyr)
 #import draft data
 draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt")
 
@@ -18,13 +18,23 @@ draft$Pos <- as.factor(draft$Pos)
 
 #import standings data (Kurtis)
 standings <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/standings.csv")
+standings$Team[which(standings$Team=="Anaheim Mighty Ducks")]<- "Anaheim Ducks"
+standings$Team[which(standings$Team=="Phoenix Coyotes")]<- "Arizona Coyotes"
+standings$Team[which(standings$Team=="Atlanta Thrashers")]<- "Winnipeg Jets"
+standings$Team[which(standings$Team=="Quebec Nordiques")]<- "Colorado Avalanche"
+standings$Team[which(standings$Team=="Hartford Whalers")]<- "Carolina Hurricanes"
+standings$Team[which(standings$Team=="Minnesota North Stars")]<- "Dallas Stars"
+standings <- standings[which(standings$Team != "Vegas Golden Knights"),]
+standings$Team <- as.character(standings$Team)
+standings$Team <- as.factor(standings$Team)
+table(standings$Team)
 
 #import goalies data
 goalies <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/goalies_data.csv")
 
 #import skaters data
 skaters <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/skaters_data.csv")
-
+skaters$ATOI <- skaters$TOI/skaters$GP
 #import city temps and years old
 temps <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/NHL_city_temp_data.csv")
 
@@ -32,29 +42,65 @@ temps <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/ma
 
 #predict points using draft position, exempt goalies
 #may split up by position
-players <- draft[which(draft$Pos!='G'),]
-ggplot(data=players,aes(x=Overall, y=PTS))+
+draft$ppgp <- draft$PTS/draft$GP #created points per games player metric
+players <- draft[which(draft$Pos!='G' & draft$GP>10),] #excludes goalies and players who have played less than 10 games
+
+ggplot(data=players,aes(x=Overall, y=ppgp))+
   geom_point()
 
-pts_overall <- lm(PTS ~ poly(Overall,2),data=draft)
+pts_overall <- lm(ppgp ~ poly(Overall,2),data=draft)
 summary(pts_overall)
 
 #predict points as a function of age
-ggplot(data=players,aes(x=Age, y=PTS))+
+#cut off at 20 Pts to exclude marginal players that may not have a full career
+peak_age_data <- skaters[which(skaters$PTS>20 & skaters$Age <40),]
+ggplot(data=peak_age_data,aes(x=Age, y=PTS))+
   geom_point()
+pts_age <- lm(PTS ~ poly(Age,2,raw=TRUE),data=peak_age_data)
+summary(pts_age)
+#took derivative of results to find age
+(peak_age <- ((-1)*pts_age$coefficients[2])/(2*pts_age$coefficients[3]))
 
-#minutes versus points plot
+#average time on ice versus points plot
+ggplot(data=skaters,aes(x=ATOI, y=PTS))+
+  geom_point()+
+  geom_smooth(method="auto")+
+  facet_wrap(~Pos)
+pts_atoi <- lm(PTS~poly(ATOI,2,raw=TRUE),data=skaters)
+summary(pts_atoi)
 
-#regression to predict points in any given season
+################# Does Tanking Work? #####################
+#regression to predict points in any given season, uses 5 lags of total team Points
+tanking <- function(team){
+  team_data <- standings[which(standings$Team == team),]
+  team_reg <- lm(Pts ~ lag(Pts,n=1L) + lag(Pts,n=2L) + 
+                 lag(Pts,n=3L)+ lag(Pts,n=4L)+ lag(Pts,n=5L),data=team_data)
+  team_reg$coefficients
+}
+
+teams<- unique(standings$Team) #list of teams
+tanking_results <- as.data.frame(lapply(teams,tanking)) #list apply
+tanking_results <- t(tanking_results) #transpose results
+colnames(tanking_results)<-c("intercept","lag1","lag2","lag3","lag4","lag5")
+tanking_results <- as.data.frame(tanking_results) #had issue with atomic vectors
+tanking_results<- rbind(tanking_results,sapply(tanking_results,mean)) #create new bottom row with averages
+row.names(tanking_results) <- c(as.character(unique(standings$Team)),"Average") #labeling nicely
+
+
 #inputs are age, draft position, position, amateur lg., time trend the year
+
 #predict +/- as well
+
 #predict save percentage with draft position
+
 #use glm to predict if play in NHL or not
+
 #predict games with draft postion and amateur league
+
 #test salary cap vs. no salary cap 
 
 #predict teams points with performance in previous years (use lags 1-5)
-#see how long rebuilding takes
+
 #glm make/miss playoffs
 
 
