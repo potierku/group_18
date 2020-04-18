@@ -1,5 +1,6 @@
 library(ggplot2)
 library(dplyr)
+library(stringr)
 #import draft data
 draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt")
 
@@ -35,6 +36,20 @@ goalies <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/
 #import skaters data
 skaters <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/skaters_data.csv")
 skaters$ATOI <- skaters$TOI/skaters$GP
+skaters$year_player <- paste(skaters$ï..Year,skaters$Player)
+#this for loop is used to remove instances of a player being traded (whole season stats only)
+for (i in c(1:length(skaters$year_player))){
+  while (ifelse(i<length(skaters$year_player),skaters$year_player[i]==skaters$year_player[i+1],FALSE)){
+    skaters<-skaters[-c(i+1),]
+  }
+}
+skaters$Player <- as.character(skaters$Player)
+#remove asterisks from skaters data
+for (i in c(1:length(skaters$Player))){
+  skaters$Player[i] <-(gsub("\\*","",skaters$Player[i]))
+}
+
+
 #import city temps and years old
 temps <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/NHL_city_temp_data.csv")
 
@@ -88,7 +103,13 @@ row.names(tanking_results) <- c(as.character(unique(standings$Team)),"Average") 
 
 
 #inputs are age, draft position, position, amateur lg., time trend the year
-
+for (i in 1: (length(draft$Player))){
+  df <- as.data.frame(skaters[which(as.character(skaters$Player) == as.character(draft$Player[i])),])
+  df <- df[which(df$GP>10),]
+  df <- df[C(1:3),]
+  numerics <- df[,c(6:13)]
+  draft_result <- rbind(draft_results,c(df[1,c(1:5)],sapply(numerics,sum)))
+}
 #predict +/- as well
 
 #predict save percentage with draft position
