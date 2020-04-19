@@ -2,7 +2,7 @@ library(ggplot2)
 library(dplyr)
 library(stringr)
 #import draft data
-draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt")
+draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt",stringsAsFactors = FALSE)
 
 #replace NA values in stats with 0
 draft$GP[is.na(draft$GP)] <-0
@@ -101,15 +101,16 @@ tanking_results <- as.data.frame(tanking_results) #had issue with atomic vectors
 tanking_results<- rbind(tanking_results,sapply(tanking_results,mean)) #create new bottom row with averages
 row.names(tanking_results) <- c(as.character(unique(standings$Team)),"Average") #labeling nicely
 
-
 #inputs are age, draft position, position, amateur lg., time trend the year
-for (i in 1: (length(draft$Player))){
-  df <- as.data.frame(skaters[which(as.character(skaters$Player) == as.character(draft$Player[i])),])
+draft_results <- as.data.frame(colnames(c("Year","Round","Overall","Team","Player","Nat.","POS","Age","To","Amateur.Team","Amateur.Lg","GP","G","A","PTS","+_-","PIM")))
+for (i in c(1: (length(draft$Player)))){
+  df <- skaters[which(as.character(skaters$Player) == as.character(draft$Player[i])),]
   df <- df[which(df$GP>10),]
-  df <- df[C(1:3),]
-  numerics <- df[,c(6:13)]
-  draft_result <- rbind(draft_results,c(df[1,c(1:5)],sapply(numerics,sum)))
+  df <- df[c(1:3),]
+  numerics <- df[,c(6:11)]
+  draft_results <- rbind(draft_results,as.data.frame(c(draft[i,c(1:11)],sapply(numerics,sum))))
 }
+
 #predict +/- as well
 
 #predict save percentage with draft position
