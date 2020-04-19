@@ -1,6 +1,5 @@
 library(ggplot2)
 library(dplyr)
-library(stringr)
 #import draft data
 draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt",stringsAsFactors = FALSE)
 
@@ -16,6 +15,9 @@ draft$PIM[is.na(draft$PIM)] <-0
 draft$Pos <- as.character(draft$Pos)
 draft$Pos[which(is.na(draft$Pos))] <- "unknown"
 draft$Pos <- as.factor(draft$Pos)
+
+#delete rows with 2017,2018,2019
+draft <- draft[-which(draft$Year %in% c("2017","2018","2019")),]
 
 #import standings data (Kurtis)
 standings <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/standings.csv")
@@ -108,8 +110,20 @@ for (i in c(1: (length(draft$Player)))){
   df <- df[which(df$GP>10),]
   df <- df[c(1:3),]
   numerics <- df[,c(6:11)]
+  #combine the first 3 years of numeric data from skaters with draft info and add
   draft_results <- rbind(draft_results,as.data.frame(c(draft[i,c(1:11)],sapply(numerics,sum))))
 }
+#sets na values to 0
+draft_results$GP[is.na(draft_results$GP)] <-0
+draft_results$G[is.na(draft_results$G)] <-0 
+draft_results$A[is.na(draft_results$A)] <-0 
+draft_results$PTS[is.na(draft_results$PTS)] <-0 
+draft_results$X...[is.na(draft_results$X...)] <-0 
+draft_results$PIM[is.na(draft_results$PIM)] <-0 
+
+summary(lm(PTS ~ Overall +Amateur.Lg.,data=draft_results))
+ggplot(data=draft_results,aes(x=Overall, y=PTS))+
+  geom_point()
 
 #predict +/- as well
 
