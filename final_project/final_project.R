@@ -1,7 +1,9 @@
 library(ggplot2)
 library(dplyr)
-#import draft data
+library(rpart)
+################## import draft data ####################
 draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt",stringsAsFactors = FALSE)
+draft$Pos[which(draft$Pos=="")]=NA #replace blanks with NA
 
 #replace NA values in stats with 0
 draft$GP[is.na(draft$GP)] <-0
@@ -19,7 +21,7 @@ draft$Pos <- as.factor(draft$Pos)
 #delete rows with 2017,2018,2019
 draft <- draft[-which(draft$Year %in% c("2017","2018","2019")),]
 
-#import standings data (Kurtis)
+##################### import standings data ####################
 standings <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/standings.csv")
 standings$Team[which(standings$Team=="Anaheim Mighty Ducks")]<- "Anaheim Ducks"
 standings$Team[which(standings$Team=="Phoenix Coyotes")]<- "Arizona Coyotes"
@@ -32,10 +34,10 @@ standings$Team <- as.character(standings$Team)
 standings$Team <- as.factor(standings$Team)
 table(standings$Team)
 
-#import goalies data
+######################## import goalies data ##########################
 goalies <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/goalies_data.csv")
 
-#import skaters data
+############################# import skaters data ########################
 skaters <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/skaters_data.csv")
 skaters$ATOI <- skaters$TOI/skaters$GP
 skaters$year_player <- paste(skaters$ï..Year,skaters$Player)
@@ -52,23 +54,42 @@ for (i in c(1:length(skaters$Player))){
 }
 
 
-#import city temps and years old
+######################### import city temps and years old ##########################
 temps <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/NHL_city_temp_data.csv")
 
 #year is the start year of the season
 
-#predict points using draft position, exempt goalies
-#may split up by position
-draft$ppgp <- draft$PTS/draft$GP #created points per games player metric
-players <- draft[which(draft$Pos!='G' & draft$GP>10),] #excludes goalies and players who have played less than 10 games
+#################### creates 3 year draft results dataframe #####################
+draft_results <- as.data.frame(colnames(c("Year","Round","Overall","Team","Player","Nat.","POS","Age","To","Amateur.Team","Amateur.Lg","GP","G","A","PTS","+_-","PIM")))
+for (i in c(1: (length(draft$Player)))){
+  df <- skaters[which(as.character(skaters$Player) == as.character(draft$Player[i])),]
+  df <- df[which(df$GP>10),]
+  df <- df[c(1:3),]
+  numerics <- df[,c(6:11)]
+  #combine the first 3 years of numeric data from skaters with draft info and add
+  draft_results <- rbind(draft_results,as.data.frame(c(draft[i,c(1:11)],sapply(numerics,sum))))
+}
+#sets na values to 0
+draft_results$GP[is.na(draft_results$GP)] <-0
+draft_results$G[is.na(draft_results$G)] <-0 
+draft_results$A[is.na(draft_results$A)] <-0 
+draft_results$PTS[is.na(draft_results$PTS)] <-0 
+draft_results$X...[is.na(draft_results$X...)] <-0 
+draft_results$PIM[is.na(draft_results$PIM)] <-0 
+#create column for NHL or not
+draft_results$nhl <- ifelse(draft_results$GP>20,1,0)
 
+
+################### general NHL stats ########################
+#predict points using draft position, exempt goalies
+draft$ppgp <- draft$PTS/draft$GP #created points per games player metric
+players <- draft[which(draft$Pos!='G'),] #excludes goalies and players who have played less than 10 games
 ggplot(data=players,aes(x=Overall, y=ppgp))+
   geom_point()
-
-pts_overall <- lm(ppgp ~ poly(Overall,2),data=draft)
+pts_overall <- lm(ppgp ~ poly(Overall,2) + Pos,data=draft)
 summary(pts_overall)
 
-#predict points as a function of age
+#peak age calculation
 #cut off at 20 Pts to exclude marginal players that may not have a full career
 peak_age_data <- skaters[which(skaters$PTS>20 & skaters$Age <40),]
 ggplot(data=peak_age_data,aes(x=Age, y=PTS))+
@@ -94,7 +115,6 @@ tanking <- function(team){
                  lag(Pts,n=3L)+ lag(Pts,n=4L)+ lag(Pts,n=5L),data=team_data)
   team_reg$coefficients
 }
-
 teams<- unique(standings$Team) #list of teams
 tanking_results <- as.data.frame(lapply(teams,tanking)) #list apply
 tanking_results <- t(tanking_results) #transpose results
@@ -103,40 +123,36 @@ tanking_results <- as.data.frame(tanking_results) #had issue with atomic vectors
 tanking_results<- rbind(tanking_results,sapply(tanking_results,mean)) #create new bottom row with averages
 row.names(tanking_results) <- c(as.character(unique(standings$Team)),"Average") #labeling nicely
 
-#inputs are age, draft position, position, amateur lg., time trend the year
-draft_results <- as.data.frame(colnames(c("Year","Round","Overall","Team","Player","Nat.","POS","Age","To","Amateur.Team","Amateur.Lg","GP","G","A","PTS","+_-","PIM")))
-for (i in c(1: (length(draft$Player)))){
-  df <- skaters[which(as.character(skaters$Player) == as.character(draft$Player[i])),]
-  df <- df[which(df$GP>10),]
-  df <- df[c(1:3),]
-  numerics <- df[,c(6:11)]
-  #combine the first 3 years of numeric data from skaters with draft info and add
-  draft_results <- rbind(draft_results,as.data.frame(c(draft[i,c(1:11)],sapply(numerics,sum))))
+#figures out if temperatures and if when the team was founded matter
+standings$Team <- as.character(standings$Team)
+temps$ï..Team <- as.character(temps$ï..Team)
+for (i in c(1:length(standings$Team))){
+  standings$temps[i] <- temps$High.F.Avg[which(temps$ï..Team==standings$Team[i])]
 }
-#sets na values to 0
-draft_results$GP[is.na(draft_results$GP)] <-0
-draft_results$G[is.na(draft_results$G)] <-0 
-draft_results$A[is.na(draft_results$A)] <-0 
-draft_results$PTS[is.na(draft_results$PTS)] <-0 
-draft_results$X...[is.na(draft_results$X...)] <-0 
-draft_results$PIM[is.na(draft_results$PIM)] <-0 
 
-summary(lm(PTS ~ Overall +Amateur.Lg.,data=draft_results))
-ggplot(data=draft_results,aes(x=Overall, y=PTS))+
-  geom_point()
+for (i in c(1:length(standings$Team))){
+  standings$legacy[i] <- (standings$ï..year[i] - temps$Year.Founded[which(temps$ï..Team==standings$Team[i])])
+}
+summary(lm(Pts ~ temps + legacy, data = standings))
 
-#predict +/- as well
-
-#predict save percentage with draft position
+############################ 3 year draft results ######################
+draft_results_skaters <- draft_results[which(draft$Pos!='G'),]
+summary(lm(PTS ~ poly(Overall,2,raw=TRUE) +Amateur.Lg. + Pos + Age + Nat.,data=draft_results_skaters))
+ggplot(data=draft_results_skaters,aes(x=Overall, y=PTS))+
+  geom_point()+
+  geom_smooth(method="auto")+
+  facet_wrap(~Pos)
 
 #use glm to predict if play in NHL or not
+summary(glm(nhl~poly(Overall,2,raw=TRUE) + Pos + Age, data=draft_results))
 
-#predict games with draft postion and amateur league
+#use decision tree to predict NHL based on round
+draft_results$nhl <- ifelse(draft_results$GP>20,"yes","no")
+draft_results$nhl <- as.factor(draft_results$nhl)
+#draft_results$Round <- as.numeric(draft_results$Round)
 
-#test salary cap vs. no salary cap 
-
-#predict teams points with performance in previous years (use lags 1-5)
-
-#glm make/miss playoffs
+#tree to predict nhl based on round
+round_tree <- rpart(nhl ~ Round,data=draft_results,cp=0.0001,method="class",minbucket=1,minsplit=1)
+rpart.plot::rpart.plot(round_tree,type=4,clip.right.labs=FALSE,branch=.3)
 
 
