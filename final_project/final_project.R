@@ -3,6 +3,7 @@ library(dplyr)
 library(rpart)
 library(kernlab)
 library(caret)
+library(DescTools)
 ################## import draft data ####################
 draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt",stringsAsFactors = FALSE)
 #delete rows with 2017,2018,2019
@@ -115,16 +116,23 @@ summary(pts_atoi)
 tanking <- function(team){
   team_data <- standings[which(standings$Team == team),]
   team_reg <- lm(Pts ~ lag(Pts,n=1L) + lag(Pts,n=2L) + 
-                 lag(Pts,n=3L)+ lag(Pts,n=4L)+ lag(Pts,n=5L),data=team_data)
+                 lag(Pts,n=3L)+ lag(Pts,n=4L)+ lag(Pts,n=5L) + 
+                   lag(Pts,n=6L) + lag(Pts,n=7L) + lag(Pts,n=8L),data=team_data)
   team_reg$coefficients
 }
 teams<- unique(standings$Team) #list of teams
 tanking_results <- as.data.frame(lapply(teams,tanking)) #list apply
 tanking_results <- t(tanking_results) #transpose results
-colnames(tanking_results)<-c("intercept","lag1","lag2","lag3","lag4","lag5")
+colnames(tanking_results)<-c("intercept","lag1","lag2","lag3","lag4","lag5","lag6","lag7","lag8")
 tanking_results <- as.data.frame(tanking_results) #had issue with atomic vectors
-tanking_results<- rbind(tanking_results,sapply(tanking_results,mean)) #create new bottom row with averages
-row.names(tanking_results) <- c(as.character(unique(standings$Team)),"Average") #labeling nicely
+tanking_results_stats <- as.data.frame(t(mapply(MeanCI,tanking_results,conf.level=.8)))
+ggplot(data=tanking_results_stats[2:length(tanking_results_stats$mean),],aes(x=c(1:(length(tanking_results_stats$mean)-1)),y=mean))+
+  geom_point()+
+  geom_errorbar(aes(ymin=lwr.ci,ymax=upr.ci),width=.2)+
+  labs(title="Effect of Previous Year's Performance on This Year")+
+  xlab("Number of Years Ago")+
+  ylab("Mean with 80% Confidence Interval")+
+  theme(plot.title = element_text(hjust = 0.5))
 
 #figures out if temperatures and if when the team was founded matter
 standings$Team <- as.character(standings$Team)
@@ -140,12 +148,6 @@ summary(lm(Pts ~ temps + legacy, data = standings))
 #train function in caret and cross validation
 
 #plot average, case study recent champions, add confidence intervals
-averages<-as.data.frame(t(tanking_results[31,2:6]))
-averages$lag <- c(1:5)
-#geom_ribbon for confidence intervals
-ggplot(data=averages,aes(x=lag,y=Average))+
-  geom_point()+
-  geom_line()
 
 ############################ 3 year draft results ######################
 #functions to get the rmse of the 
@@ -174,7 +176,7 @@ draft_results_skaters_test = draft_results_skaters[-draft_results_skaters_idx, ]
 
 #using a polynomial to predict points based on overall position
 rmse_results_poly <- c()
-for (i in c(1:10)){
+for (i in c(1:4)){
   poly_model <- lm(PTS ~ poly(Overall,i,raw=TRUE) + Pos,data=draft_results_skaters_train)
   rmse_results_poly[i] <- get_rmse(poly_model,draft_results_skaters_test,response="PTS")
 }
