@@ -179,8 +179,9 @@ for (i in c(1:4)){
   poly_model <- lm(PTS ~ poly(Overall,i,raw=TRUE) + Pos,data=draft_results_skaters_train)
   rmse_results_poly[i] <- get_rmse(poly_model,draft_results_skaters_test,response="PTS")
 }
-which(rmse_results_poly==min(rmse_results_poly)) #which polynomial finds the best fit
-(summary(lm(PTS ~ poly(Overall,4,raw=TRUE) + Pos,data=draft_results_skaters)))
+optimal_poly <- which(rmse_results_poly==min(rmse_results_poly)) #which polynomial finds the best fit
+(summary(lm(PTS ~ poly(Overall,optimal_poly,raw=TRUE) + Pos,data=draft_results_skaters)))
+
 #using knn to predict points based on overall position
 rmse_results_knn <- c()
 for (i in c(1:25)){
@@ -188,6 +189,7 @@ for (i in c(1:25)){
   rmse_results_knn[i] <- get_rmse(draft_results_knn,draft_results_skaters_test,response = "PTS")
 }
 which(rmse_results_knn==min(rmse_results_knn)) #number of nearest neighbors that minimizes rmse
+
 
 #use lm to predict if play in NHL or not
 summary(lm(nhl~poly(Overall,2,raw=TRUE) + Pos + Age, data=draft_results))
