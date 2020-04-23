@@ -83,7 +83,12 @@ draft_results$nhl <- ifelse(draft_results$GP>20,1,0)
 draft$ppgp <- draft$PTS/draft$GP #created points per games player metric
 players <- draft[which(draft$Pos!='G'),] #excludes goalies and players who have played less than 10 games
 ggplot(data=players,aes(x=Overall, y=ppgp))+
-  geom_point()
+  geom_point()+
+  labs(title="Points Per Game vs. Overall Pick Number")+
+  xlab("Overall Pick Number")+
+  ylab("Points Per Game")+
+  theme(plot.title = element_text(hjust = 0.5))
+  
 pts_overall <- lm(ppgp ~ poly(Overall,2) + Pos,data=draft)
 summary(pts_overall)
 
@@ -123,7 +128,7 @@ tanking_results_stats <- as.data.frame(t(mapply(MeanCI,tanking_results,conf.leve
 ggplot(data=tanking_results_stats[2:length(tanking_results_stats$mean),],aes(x=c(1:(length(tanking_results_stats$mean)-1)),y=mean))+
   geom_point()+
   geom_errorbar(aes(ymin=lwr.ci,ymax=upr.ci),width=.2)+
-  labs(title="Effect of Previous Year's Performance on This Year")+
+  labs(title="Effect of Previous Year's Team Points on This Year")+
   xlab("Number of Years Ago")+
   ylab("Mean with 80% Confidence Interval")+
   theme(plot.title = element_text(hjust = 0.5))
@@ -175,7 +180,7 @@ for (i in c(1:4)){
   rmse_results_poly[i] <- get_rmse(poly_model,draft_results_skaters_test,response="PTS")
 }
 which(rmse_results_poly==min(rmse_results_poly)) #which polynomial finds the best fit
-
+(summary(lm(PTS ~ poly(Overall,4,raw=TRUE) + Pos,data=draft_results_skaters)))
 #using knn to predict points based on overall position
 rmse_results_knn <- c()
 for (i in c(1:25)){
