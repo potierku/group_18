@@ -7,7 +7,7 @@ library(DescTools)
 ################## import draft data ####################
 draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt",stringsAsFactors = FALSE)
 #delete rows with 2017,2018,2019
-draft <- draft[-which(draft$Year %in% c("2017","2018","2019")),]
+draft <- draft[-which(draft$Year %in% c("2016","2017","2018","2019")),]
 draft$Pos[which(draft$Pos %in% c("","W","F"))]=NA #replace blanks with NA
 
 #replace NA values in stats with 0
@@ -22,8 +22,6 @@ draft$PIM[is.na(draft$PIM)] <-0
 draft$Pos <- as.character(draft$Pos)
 draft$Pos[which(is.na(draft$Pos))] <- "unknown"
 draft$Pos <- as.factor(draft$Pos)
-
-
 
 ##################### import standings data ####################
 standings <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/standings.csv")
@@ -57,11 +55,8 @@ for (i in c(1:length(skaters$Player))){
   skaters$Player[i] <-(gsub("\\*","",skaters$Player[i]))
 }
 
-
 ######################### import city temps and years old ##########################
 temps <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/NHL_city_temp_data.csv")
-
-#year is the start year of the season
 
 #################### creates 3 year draft results dataframe #####################
 draft_results <- as.data.frame(colnames(c("Year","Round","Overall","Team","Player","Nat.","POS","Age","To","Amateur.Team","Amateur.Lg","GP","G","A","PTS","+_-","PIM")))
@@ -82,7 +77,6 @@ draft_results$X...[is.na(draft_results$X...)] <-0
 draft_results$PIM[is.na(draft_results$PIM)] <-0 
 #create column for NHL or not
 draft_results$nhl <- ifelse(draft_results$GP>20,1,0)
-
 
 ################### general NHL stats ########################
 #predict points using draft position, exempt goalies
