@@ -1,9 +1,13 @@
 library(ggplot2)
 library(dplyr)
 library(rpart)
+library(kernlab)
+library(caret)
 ################## import draft data ####################
 draft <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/draft.txt",stringsAsFactors = FALSE)
-draft$Pos[which(draft$Pos=="")]=NA #replace blanks with NA
+#delete rows with 2017,2018,2019
+draft <- draft[-which(draft$Year %in% c("2017","2018","2019")),]
+draft$Pos[which(draft$Pos %in% c("","W","F"))]=NA #replace blanks with NA
 
 #replace NA values in stats with 0
 draft$GP[is.na(draft$GP)] <-0
@@ -18,8 +22,7 @@ draft$Pos <- as.character(draft$Pos)
 draft$Pos[which(is.na(draft$Pos))] <- "unknown"
 draft$Pos <- as.factor(draft$Pos)
 
-#delete rows with 2017,2018,2019
-draft <- draft[-which(draft$Year %in% c("2017","2018","2019")),]
+
 
 ##################### import standings data ####################
 standings <- read.csv("https://raw.githubusercontent.com/potierku/talk_data_to_me/master/final_project/standings.csv")
@@ -134,25 +137,76 @@ for (i in c(1:length(standings$Team))){
   standings$legacy[i] <- (standings$ï..year[i] - temps$Year.Founded[which(temps$ï..Team==standings$Team[i])])
 }
 summary(lm(Pts ~ temps + legacy, data = standings))
+#train function in caret and cross validation
+
+#plot average, case study recent champions, add confidence intervals
+averages<-as.data.frame(t(tanking_results[31,2:6]))
+averages$lag <- c(1:5)
+#geom_ribbon for confidence intervals
+ggplot(data=averages,aes(x=lag,y=Average))+
+  geom_point()+
+  geom_line()
 
 ############################ 3 year draft results ######################
+#functions to get the rmse of the 
+rmse = function(actual, predicted) {
+  sqrt(mean((actual - predicted) ^ 2))
+}
+get_rmse = function(model, data, response) {
+  rmse(actual = subset(data, select = response, drop = TRUE),
+       predicted = predict(model, data))
+}
 draft_results_skaters <- draft_results[which(draft$Pos!='G'),]
-summary(lm(PTS ~ poly(Overall,2,raw=TRUE) +Amateur.Lg. + Pos + Age + Nat.,data=draft_results_skaters))
+draft_results_skaters$Pos <- droplevels(draft_results_skaters$Pos)
+
 ggplot(data=draft_results_skaters,aes(x=Overall, y=PTS))+
   geom_point()+
   geom_smooth(method="auto")+
-  facet_wrap(~Pos)
+  facet_wrap(~Pos)+
+  labs(title="Points after 3 years in the NHL")+
+  theme(plot.title = element_text(hjust = 0.5))
 
-#use glm to predict if play in NHL or not
-summary(glm(nhl~poly(Overall,2,raw=TRUE) + Pos + Age, data=draft_results))
+#creating test and train datasets
+set.seed(6)
+draft_results_skaters_idx = sample(nrow(draft_results_skaters), round(nrow(draft_results_skaters) / 2))
+draft_results_skaters_train = draft_results_skaters[draft_results_skaters_idx, ]
+draft_results_skaters_test = draft_results_skaters[-draft_results_skaters_idx, ]
 
-#use decision tree to predict NHL based on round
-draft_results$nhl <- ifelse(draft_results$GP>20,"yes","no")
-draft_results$nhl <- as.factor(draft_results$nhl)
-#draft_results$Round <- as.numeric(draft_results$Round)
+#using a polynomial to predict points based on overall position
+rmse_results_poly <- c()
+for (i in c(1:10)){
+  poly_model <- lm(PTS ~ poly(Overall,i,raw=TRUE) + Pos,data=draft_results_skaters_train)
+  rmse_results_poly[i] <- get_rmse(poly_model,draft_results_skaters_test,response="PTS")
+}
+which(rmse_results_poly==min(rmse_results_poly)) #which polynomial finds the best fit
 
-#tree to predict nhl based on round
-round_tree <- rpart(nhl ~ Round,data=draft_results,cp=0.0001,method="class",minbucket=1,minsplit=1)
-rpart.plot::rpart.plot(round_tree,type=4,clip.right.labs=FALSE,branch=.3)
+#using knn to predict points based on overall position
+rmse_results_knn <- c()
+for (i in c(1:25)){
+  draft_results_knn <- knnreg(PTS ~ Overall + Pos,draft_results_skaters_train,k=i)
+  rmse_results_knn[i] <- get_rmse(draft_results_knn,draft_results_skaters_test,response = "PTS")
+}
+which(rmse_results_knn==min(rmse_results_knn)) #number of nearest neighbors that minimizes rmse
 
+#use lm to predict if play in NHL or not
+summary(lm(nhl~poly(Overall,2,raw=TRUE) + Pos + Age, data=draft_results))
+
+
+#odds of making the nhl based on round drafted
+
+#adjust for modern size of nhl
+draft_results$Round_modern <- trunc(1+draft_results$Overall/31)
+
+round_probs <- as.data.frame(names(c("round","chance")))
+for (i in c(1:10)){
+  df <- draft_results[which(draft_results$Round_modern==i),]
+  round_probs <- rbind(round_probs,c(as.integer(i),mean(df$nhl)))
+}
+names(round_probs) <- c("round","chance")
+ggplot(data=round_probs,aes(x=round,y=chance))+
+  geom_point()+
+  scale_x_continuous(name="Round of Draft (31 team equivalent)",breaks=c(1:length(round_probs$round)))+
+  scale_y_continuous(name= "Chance of > 20 GP in NHL")+
+  labs(title="Chance of playing in the NHL")+
+  theme(plot.title = element_text(hjust = 0.5))
 
