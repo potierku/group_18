@@ -191,9 +191,7 @@ which(rmse_results_knn==min(rmse_results_knn)) #number of nearest neighbors that
 #use lm to predict if play in NHL or not
 summary(lm(nhl~poly(Overall,2,raw=TRUE) + Pos + Age, data=draft_results))
 
-
 #odds of making the nhl based on round drafted
-
 #adjust for modern size of nhl
 draft_results$Round_modern <- trunc(1+draft_results$Overall/31)
 
